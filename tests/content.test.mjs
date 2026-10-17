@@ -141,3 +141,41 @@ test('interactive elements have hover and focus-visible states', () => {
 test('differentiation bullet English translation is a complete sentence', () => {
   assert.match(html, /we don't just issue tickets/);
 });
+
+// --- Motion pass (Promar-grade kinetic feel, new identity, vanilla CSS/JS only) ---
+
+test('hero content has a staggered entrance animation', () => {
+  const heroSection = html.match(/<section id="inicio"[\s\S]*?<\/section>/)[0];
+  const staggered = (heroSection.match(/class="[^"]*hero-anim[^"]*"/g) || []).length;
+  assert.ok(staggered >= 3, `expected at least 3 hero-anim elements (h1, p, cta), found ${staggered}`);
+  assert.match(heroSection, /hero-anim d2/);
+  assert.match(heroSection, /hero-anim d3/);
+});
+
+test('every reveal-on-scroll section is covered by the JS observer target selector', () => {
+  const revealCount = (html.match(/class="[^"]*\breveal\b[^"]*"/g) || []).length;
+  assert.ok(revealCount >= 4, `expected at least 4 .reveal elements across services/diferencia/proceso/contacto, found ${revealCount}`);
+});
+
+test('hero headline carries a gradient accent on one word, in the new palette (not Promar\'s green/cyan)', () => {
+  assert.match(html, /<span class="grad-text"[^>]*>[^<]+<\/span>/);
+  assert.doesNotMatch(html, /#4DB820|#22B4D4/i);
+});
+
+test('a floating WhatsApp FAB is reachable from anywhere on the page', () => {
+  const fabTag = html.match(/<a[^>]*class="[^"]*\bfab-whatsapp\b[^"]*"[^>]*>/);
+  assert.ok(fabTag, 'expected a .fab-whatsapp element');
+  assert.match(fabTag[0], /whatsapp-cta/, 'the FAB should also carry whatsapp-cta so JS wiring and the raw-href test both cover it');
+});
+
+test('nav gains a stronger shadow once scrolled, via a JS-toggled class', () => {
+  assert.match(html_css, /#nav\.scrolled/);
+});
+
+test('reduced-motion users still see all content — animated-entrance classes are forced visible, not just un-animated', () => {
+  const reducedMotionBlock = html_css.match(/@media \(prefers-reduced-motion: reduce\) \{[\s\S]*?\n\}/)[0];
+  assert.match(reducedMotionBlock, /\.hero-anim/);
+  assert.match(reducedMotionBlock, /\.reveal/);
+  assert.match(reducedMotionBlock, /opacity:\s*1\s*!important/);
+  assert.match(reducedMotionBlock, /transform:\s*none\s*!important/);
+});

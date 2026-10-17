@@ -1,6 +1,39 @@
 html[data-lang="es"] [lang="en"] { display: none; }
 html[data-lang="en"] [lang="es"] { display: none; }
 
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.hero-anim { opacity: 0; animation: fade-up 0.7s ease forwards; }
+.hero-anim.d2 { animation-delay: 0.15s; }
+.hero-anim.d3 { animation-delay: 0.3s; }
+
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal.in { opacity: 1; transform: translateY(0); }
+
+.grad-text {
+  background: linear-gradient(100deg, #1B4B43 0%, #C97B3D 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+#nav.scrolled { box-shadow: 0 2px 20px rgba(27, 75, 67, 0.12); }
+
+.fab-whatsapp {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  z-index: 50;
+}
+
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; transition: none !important; }
+  .hero-anim, .reveal { opacity: 1 !important; transform: none !important; }
 }

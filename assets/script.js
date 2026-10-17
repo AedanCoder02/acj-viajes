@@ -25,6 +25,10 @@ export function currentYear(date = new Date()) {
   return date.getFullYear();
 }
 
+export function isScrolled(scrollY, threshold = 8) {
+  return scrollY > threshold;
+}
+
 if (typeof document !== 'undefined') {
   document.addEventListener('DOMContentLoaded', () => {
     const toggleBtn = document.getElementById('lang-toggle');
@@ -40,6 +44,30 @@ if (typeof document !== 'undefined') {
     const yearEl = document.getElementById('footer-year');
     if (yearEl) {
       yearEl.textContent = String(currentYear());
+    }
+
+    const nav = document.getElementById('nav');
+    if (nav) {
+      const updateNavShadow = () => nav.classList.toggle('scrolled', isScrolled(window.scrollY));
+      updateNavShadow();
+      window.addEventListener('scroll', updateNavShadow, { passive: true });
+    }
+
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('in');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.15 }
+      );
+      document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+    } else {
+      document.querySelectorAll('.reveal').forEach((el) => el.classList.add('in'));
     }
   });
 }

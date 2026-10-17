@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { CONFIG, buildWhatsAppUrl, toggleLanguage, currentYear } from '../assets/script.js';
+import { CONFIG, buildWhatsAppUrl, toggleLanguage, currentYear, isScrolled } from '../assets/script.js';
 
 test('CONFIG.whatsappNumber is an obvious placeholder, not a real-looking number', () => {
   assert.match(CONFIG.whatsappNumber, /^0+$/);
@@ -36,4 +36,10 @@ test('toggleLanguage also updates the html lang attribute, not just data-lang', 
 
 test('currentYear reads the year from a given date', () => {
   assert.equal(currentYear(new Date('2026-06-15T12:00:00Z')), 2026);
+});
+
+test('isScrolled is false at the top of the page and true past the threshold', () => {
+  assert.equal(isScrolled(0), false);
+  assert.equal(isScrolled(4), false);
+  assert.equal(isScrolled(50), true);
 });
