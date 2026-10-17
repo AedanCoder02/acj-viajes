@@ -256,3 +256,44 @@ test('"Cómo trabajamos" numbers its three real steps — the one place in the p
   const numbers = [...procesoSection.matchAll(/class="[^"]*\bstep-number\b[^"]*"[^>]*>\s*(\d)/g)].map((m) => m[1]);
   assert.deepEqual(numbers, ['1', '2', '3']);
 });
+
+// --- Whole-page consistency pass: the identity built in the hero carries through every section ---
+
+test('nav links animate in one by one, not as a single static block', () => {
+  const navHtml = html.match(/<nav[\s\S]*?<\/nav>/)[0];
+  const itemCount = (navHtml.match(/class="[^"]*\bnav-item-anim\b[^"]*"/g) || []).length;
+  assert.ok(itemCount >= 3, `expected at least 3 individually staggered nav links, found ${itemCount}`);
+  assert.match(navHtml, /nav-item-anim d2/);
+  assert.match(navHtml, /nav-item-anim d3/);
+});
+
+test('the page alternates dark/light section backgrounds for rhythm, echoing the hero, instead of flat cream throughout', () => {
+  const darkSections = (html.match(/<section[^>]*id="[^"]*"[^>]*bg-ink/g) || []).length;
+  assert.ok(darkSections >= 2, `expected at least 2 non-hero sections on bg-ink, found ${darkSections}`);
+});
+
+test('tepui-skyline dividers mark every section-background transition, not just the one after the hero', () => {
+  const dividerCount = (html.match(/tepui-divider/g) || []).length;
+  assert.ok(dividerCount >= 3, `expected at least 3 tepui dividers across the page, found ${dividerCount}`);
+});
+
+test('service cards are differentiated by a distinct accent per card, not an identical stamped card-kit', () => {
+  const servicesSection = html.match(/<section id="servicios"[\s\S]*?<\/section>/)[0];
+  const accents = new Set((servicesSection.match(/accent-(forest|amber|clay)/g) || []));
+  assert.equal(accents.size, 3, `expected all 3 distinct accent colors used once each, found ${[...accents]}`);
+});
+
+test('differentiation bullets read as an editorial list, not another grid of identical white rounded cards', () => {
+  const diferenciaSection = html.match(/<section id="diferencia"[\s\S]*?<\/section>/)[0];
+  assert.doesNotMatch(diferenciaSection, /bg-white rounded-xl/, 'should no longer reuse the generic boxed-card pattern');
+});
+
+test('the three process steps are visually connected by a route line, echoing "circuitos a medida"', () => {
+  const procesoSection = html.match(/<section id="proceso"[\s\S]*?<\/section>/)[0];
+  assert.match(procesoSection, /route-line/);
+});
+
+test('reduced-motion guard also covers the new nav-item stagger elements', () => {
+  const reducedMotionBlock = html_css.match(/@media \(prefers-reduced-motion: reduce\) \{[\s\S]*?\n\}/)[0];
+  assert.match(reducedMotionBlock, /\.nav-item-anim/);
+});

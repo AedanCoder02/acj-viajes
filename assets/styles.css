@@ -26,6 +26,10 @@ html[data-lang="en"] [lang="es"] { display: none; }
 
 .nav-anim { animation: nav-drop 0.5s ease forwards; }
 
+.nav-item-anim { opacity: 0; animation: fade-up 0.5s ease forwards 0.35s; }
+.nav-item-anim.d2 { animation-delay: 0.45s; }
+.nav-item-anim.d3 { animation-delay: 0.55s; }
+
 .logo-arc {
   stroke-dasharray: 60;
   stroke-dashoffset: 60;
@@ -82,9 +86,29 @@ html[data-lang="en"] [lang="es"] { display: none; }
   z-index: 50;
 }
 
+.accent-forest { background: #234D3F; }
+.accent-amber  { background: #E3A23B; }
+.accent-clay   { background: #9C5A2E; }
+
+.route-line {
+  display: none;
+}
+@media (min-width: 768px) {
+  .route-line {
+    display: block;
+    position: absolute;
+    top: 1.1rem;
+    left: 16.5%;
+    right: 16.5%;
+    height: 0;
+    border-top: 2px dashed #9C5A2E;
+    z-index: 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; transition: none !important; }
-  .hero-anim, .nav-anim, .reveal, .reveal-item, .logo-pin, .logo-text {
+  .hero-anim, .nav-anim, .nav-item-anim, .reveal, .reveal-item, .logo-pin, .logo-text {
     opacity: 1 !important;
     transform: none !important;
   }
