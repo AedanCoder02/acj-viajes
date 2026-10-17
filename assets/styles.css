@@ -1,0 +1,6 @@
+html[data-lang="es"] [lang="en"] { display: none; }
+html[data-lang="en"] [lang="es"] { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
