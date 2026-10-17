@@ -28,3 +28,17 @@ test('hero mission statement is present in both languages', () => {
   assert.match(html, /Escuchamos tus sueños, diseñamos cada detalle a tu medida/);
   assert.match(html, /We listen to your dreams, design every detail around you/);
 });
+
+test('services section has three bilingual cards with the client-provided copy', () => {
+  assert.match(html, /Elegimos rutas, tiempos y paradas según tus gustos/);
+  assert.match(html, /Comparamos aerolíneas, horarios y tarifas/);
+  assert.match(html, /Negociamos tarifas preferenciales, verificamos la calidad/);
+  assert.match(html, /We choose the routes, pace, and stops to match your preferences/);
+  assert.match(html, /We compare airlines, schedules, and fares/);
+  assert.match(html, /We negotiate preferential rates, verify quality/);
+});
+
+test('each service closes with the ACJ Viajes tagline in both languages', () => {
+  assert.equal((html.match(/ACJ Viajes: viaja, descubre, vive\./g) || []).length, 3);
+  assert.equal((html.match(/ACJ Viajes: travel, discover, live\./g) || []).length, 3);
+});
