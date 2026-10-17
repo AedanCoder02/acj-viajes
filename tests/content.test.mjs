@@ -39,6 +39,24 @@ test('services section has three bilingual cards with the client-provided copy',
 });
 
 test('each service closes with the ACJ Viajes tagline in both languages', () => {
-  assert.equal((html.match(/ACJ Viajes: viaja, descubre, vive\./g) || []).length, 3);
-  assert.equal((html.match(/ACJ Viajes: travel, discover, live\./g) || []).length, 3);
+  const servicesSection = html.match(/<section id="servicios"[\s\S]*?<\/section>/)[0];
+  assert.equal((servicesSection.match(/ACJ Viajes: viaja, descubre, vive\./g) || []).length, 3);
+  assert.equal((servicesSection.match(/ACJ Viajes: travel, discover, live\./g) || []).length, 3);
+});
+
+test('differentiation section carries the key client message, both languages', () => {
+  assert.match(html, /Otras agencias venden servicios; en ACJ Viajes creamos tu experiencia/);
+  assert.match(html, /Other agencies sell services; at ACJ Viajes we create your experience/);
+});
+
+test('differentiation bullets are present (Spanish)', () => {
+  assert.match(html, /[Aa]sesor único/);
+  assert.match(html, /[Ee]xperiencia exclusiva/);
+});
+
+test('trust section contains no fabricated stats or unearned claims', () => {
+  const banned = [/\+\d{2,}\s*(clientes|viajeros|años)/i, /certificaci[oó]n\s+IATA/i, /a[ñn]os de experiencia/i];
+  for (const pattern of banned) {
+    assert.doesNotMatch(html, pattern);
+  }
 });
