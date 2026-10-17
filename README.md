@@ -5,9 +5,9 @@ custom land circuits, domestic/international ticketing, and lodging. No
 framework, no build step — open `index.html` directly or serve the directory
 with any static file server. Run `npm test` to run the test suite.
 
-**Live:** https://acj-viajes.vercel.app
+**Live:** https://aedancoder02.github.io/acj-viajes/
 **Repo:** https://github.com/AedanCoder02/acj-viajes
-**Deploy:** Vercel project `acj-viajes` under the Kryptyk account (`kryptycstore-6214s-projects`) — GitHub push does NOT auto-deploy (Vercel couldn't link the repo under this account's permissions); redeploy manually with `vercel --prod --yes --token <kryptyk-token>` from this directory after every change. Token lives in `credentials_vercel_kryptyk.md` memory.
+**Deploy:** GitHub Pages, serving straight from the `master` branch root — same pattern as `promar_web`. Auto-deploys on every push to `master`; no build step, no manual redeploy command. (Previously deployed to Vercel under the Kryptyk account — rolled back; move to Vercel once a real domain exists to attach.)
 
 **Before launch:**
 - Replace `CONFIG.whatsappNumber` in `assets/script.js` with the real WhatsApp number (also update the matching hardcoded `wa.me/000000000...` hrefs in `index.html`'s CTA markup — all currently point at the same placeholder).
