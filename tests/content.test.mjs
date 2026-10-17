@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
 const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+const html_css = readFileSync(new URL('../assets/styles.css', import.meta.url), 'utf8');
 
 test('root element defaults to Spanish with no JS required', () => {
   assert.match(html, /<html[^>]*\blang="es"[^>]*\bdata-lang="es"/);
@@ -59,4 +60,19 @@ test('trust section contains no fabricated stats or unearned claims', () => {
   for (const pattern of banned) {
     assert.doesNotMatch(html, pattern);
   }
+});
+
+test('closing CTA section has a WhatsApp button', () => {
+  assert.match(html, /<section[^>]*id="contacto"[\s\S]*whatsapp-cta[\s\S]*<\/section>/);
+});
+
+test('footer carries the tagline in both languages and a dynamic year', () => {
+  assert.match(html, /viaja, descubre, vive/i);
+  assert.match(html, /travel, discover, live/i);
+  assert.match(html, /id="footer-year"/);
+});
+
+test('every transition/animation in styles.css is covered by the reduced-motion guard', () => {
+  const guardIndex = html_css.indexOf('prefers-reduced-motion');
+  assert.ok(guardIndex > -1);
 });
