@@ -379,12 +379,14 @@ test('footer is a full section, not just a tagline and copyright line', () => {
   assert.match(footerHtml, /whatsapp-cta/, 'footer should carry its own CTA');
 });
 
-test('footer destinations marquee scrolls real place names, not decorative all-caps metadata', () => {
-  const footerHtml = html.match(/<footer[\s\S]*?<\/footer>/)[0];
-  assert.match(footerHtml, /class="[^"]*\bmarquee\b[^"]*"/);
-  assert.match(footerHtml, /Los Roques/);
-  assert.match(footerHtml, /Roraima|Mérida|Canaima/);
-  assert.doesNotMatch(footerHtml, /·/, 'no middle-dot metadata separators — that tell was already rejected once');
+test('destinations ticker (below hero) scrolls real place names, not decorative all-caps metadata', () => {
+  const heroIndex = html.indexOf('id="inicio"');
+  const servicesIndex = html.indexOf('id="servicios"');
+  const tickerHtml = html.slice(heroIndex, servicesIndex);
+  assert.match(tickerHtml, /class="[^"]*\bmarquee\b[^"]*"/);
+  assert.match(tickerHtml, /Los Roques/);
+  assert.match(tickerHtml, /Roraima|Mérida|Canaima/);
+  assert.doesNotMatch(tickerHtml, /·/, 'no middle-dot metadata separators — that tell was already rejected once');
   assert.match(html_css, /@keyframes marquee-scroll/);
   assert.match(html_css, /\.marquee-track\s*\{[^}]*animation:\s*marquee-scroll/s);
 });
@@ -427,9 +429,11 @@ test('a destinations ticker runs directly below the hero, mixing national and in
   assert.match(betweenHeroAndServices, /Madrid|Miami|Tokio|Kioto|Cancún|Bogotá|Panamá/);
 });
 
-test('footer marquee also carries international destinations, not only Venezuela', () => {
-  const footerHtml = html.match(/<footer[\s\S]*?<\/footer>/)[0];
-  assert.match(footerHtml, /Madrid|Miami|Tokio|Kioto|Cancún|Bogotá|Panamá/);
+test('the single destinations ticker (below the hero) carries international stops; the footer no longer duplicates it', () => {
+  const heroIndex = html.indexOf('id="inicio"');
+  const servicesIndex = html.indexOf('id="servicios"');
+  const betweenHeroAndServices = html.slice(heroIndex, servicesIndex);
+  assert.match(betweenHeroAndServices, /Madrid|Miami|Tokio|Kioto|Cancún|Bogotá|Panamá/);
 });
 
 // --- Footer legal links: real pages, not dead placeholders ---
@@ -453,3 +457,35 @@ for (const page of ['privacidad.html', 'terminos.html', 'cookies.html']) {
     assert.match(pageHtml, /<script type="module" src="assets\/script\.js">/);
   });
 }
+
+// --- Fix the dark-on-dark seam, de-duplicate the footer ticker, build a real footer, add a cookie notice ---
+
+test('proceso and contacto (two consecutive dark photo sections) have a visible boundary between them, not a blended seam', () => {
+  const contactoOpenTag = html.match(/<section id="contacto"[^>]*>/)[0];
+  assert.match(contactoOpenTag, /border-t-2 border-amber/, 'expected a clear amber divider line opening the contacto section');
+});
+
+test('the footer no longer repeats the destinations ticker now that it lives below the hero', () => {
+  const footerHtml = html.match(/<footer[\s\S]*?<\/footer>/)[0];
+  assert.doesNotMatch(footerHtml, /class="[^"]*\bmarquee\b[^"]*"/, 'the ticker should only appear once, below the hero, not duplicated in the footer');
+});
+
+test('footer is a real multi-column layout (brand, links, services, contact), not a single row', () => {
+  const footerHtml = html.match(/<footer[\s\S]*?<\/footer>/)[0];
+  const columnCount = (footerHtml.match(/class="[^"]*\bfooter-col\b[^"]*"/g) || []).length;
+  assert.ok(columnCount >= 3, `expected at least 3 footer-col blocks, found ${columnCount}`);
+  assert.match(footerHtml, /Circuitos terrestres/, 'services column should list the real services, not be decorative');
+});
+
+test('a cookie notice banner exists, is honest about not using tracking, and links to the cookies page', () => {
+  assert.match(html, /id="cookie-notice"/);
+  const bannerHtml = html.match(/<div id="cookie-notice"[\s\S]*?<\/div>\s*<\/div>/)[0];
+  assert.match(bannerHtml, /cookies\.html/);
+  assert.match(bannerHtml, /id="cookie-dismiss"/);
+});
+
+test('cookie notice JS remembers dismissal via localStorage and does not re-show on every visit', () => {
+  const scriptJs = readFileSync(new URL('../assets/script.js', import.meta.url), 'utf8');
+  assert.match(scriptJs, /cookie-notice/);
+  assert.match(scriptJs, /localStorage/);
+});

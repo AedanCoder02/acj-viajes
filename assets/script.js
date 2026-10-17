@@ -69,5 +69,19 @@ if (typeof document !== 'undefined') {
     } else {
       document.querySelectorAll('.reveal').forEach((el) => el.classList.add('in'));
     }
+
+    const cookieNotice = document.getElementById('cookie-notice');
+    if (cookieNotice) {
+      if (!localStorage.getItem('cookie-notice-dismissed')) {
+        cookieNotice.classList.remove('hidden');
+      }
+      const dismissBtn = document.getElementById('cookie-dismiss');
+      if (dismissBtn) {
+        dismissBtn.addEventListener('click', () => {
+          cookieNotice.classList.add('hidden');
+          localStorage.setItem('cookie-notice-dismissed', '1');
+        });
+      }
+    }
   });
 }
