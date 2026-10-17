@@ -321,6 +321,19 @@ test('services opens with its own distinct white-sand beach banner, not a repeat
   assert.match(html_css, /\.banner-fade\s*\{[^}]*background:\s*linear-gradient/s);
 });
 
+test('the beach banner is tall enough for the water and sand to actually read, and stays mostly unobstructed before fading', () => {
+  const bannerWrapper = html.match(/<div class="relative ([^"]*h-\[?\d[^"]*)">\s*<img[^>]*playa\.jpg/);
+  assert.ok(bannerWrapper, 'expected the banner wrapper div right before the playa.jpg img');
+  const heightClasses = bannerWrapper[1];
+  const mobileHeight = Number(heightClasses.match(/(?:^|\s)h-(\d+)\b/)?.[1] || 0);
+  assert.ok(mobileHeight >= 64, `banner should be taller than the old h-48, found h-${mobileHeight}`);
+
+  const fadeRule = html_css.match(/\.banner-fade\s*\{[^}]*\}/s)[0];
+  const transparentStops = [...fadeRule.matchAll(/rgba\(246, 241, 231, 0\)\s+(\d+)%/g)].map((m) => Number(m[1]));
+  assert.ok(transparentStops.length >= 2, 'expected the gradient to hold fully transparent across most of the banner, not ramp from 0%');
+  assert.ok(Math.max(...transparentStops) >= 50, `transparent zone should extend at least halfway down, found stops at ${transparentStops}`);
+});
+
 test('diferencia is a full-bleed city photo with the same dark-to-clear gradient treatment as the hero', () => {
   const diferenciaSection = html.match(/<section id="diferencia"[\s\S]*?<\/section>/)[0];
   assert.match(diferenciaSection, /<img[^>]*src="assets\/images\/ciudad\.jpg"/);

@@ -84,7 +84,7 @@ html[data-lang="en"] [lang="es"] { display: none; }
 }
 
 .banner-fade {
-  background: linear-gradient(180deg, rgba(246, 241, 231, 0) 0%, #F6F1E7 95%);
+  background: linear-gradient(180deg, rgba(246, 241, 231, 0) 0%, rgba(246, 241, 231, 0) 62%, #F6F1E7 100%);
 }
 
 .fab-whatsapp {
