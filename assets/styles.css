@@ -96,8 +96,11 @@ html {
 .night-scrim {
   background: linear-gradient(180deg, #16231F 0%, #16231F 60%, rgba(22, 35, 31, 0.1) 100%);
 }
+.shrine-scrim {
+  background: linear-gradient(180deg, #16231F 0%, #16231F 60%, rgba(22, 35, 31, 0.1) 100%);
+}
 @media (min-width: 768px) {
-  .hero-scrim, .city-scrim, .night-scrim {
+  .hero-scrim, .city-scrim, .night-scrim, .shrine-scrim {
     background: linear-gradient(90deg, #16231F 0%, #16231F 36%, rgba(22, 35, 31, 0.1) 52%, rgba(22, 35, 31, 0) 65%);
   }
 }

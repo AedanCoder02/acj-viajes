@@ -106,6 +106,18 @@
         </a>
       </div>
     </section>
+
+    <div class="marquee overflow-hidden bg-paper border-b border-ink/10 py-3">
+      <div class="marquee-track">
+        <div class="flex items-center gap-10 pr-10 font-serif italic text-ink/50 text-base whitespace-nowrap">
+          <span>Los Roques</span><span>Mérida</span><span>Canaima</span><span>Roraima</span><span>Choroní</span><span>Madrid</span><span>Miami</span><span>Cancún</span><span>Bogotá</span><span>Kioto</span>
+        </div>
+        <div class="flex items-center gap-10 pr-10 font-serif italic text-ink/50 text-base whitespace-nowrap" aria-hidden="true">
+          <span>Los Roques</span><span>Mérida</span><span>Canaima</span><span>Roraima</span><span>Choroní</span><span>Madrid</span><span>Miami</span><span>Cancún</span><span>Bogotá</span><span>Kioto</span>
+        </div>
+      </div>
+    </div>
+
     <section id="servicios" class="reveal relative overflow-hidden">
       <img src="assets/images/playa.jpg" alt="Orilla de una playa de arena blanca con aguas cristalinas y palmeras en Los Roques, Venezuela" class="absolute inset-0 w-full h-full object-cover" />
       <div class="beach-wash absolute inset-0"></div>
@@ -277,8 +289,10 @@
       </div>
     </section>
 
-    <section id="contacto" class="reveal relative bg-ink text-paper">
-      <div class="py-20 px-5 max-w-2xl mx-auto text-center">
+    <section id="contacto" class="reveal relative bg-ink text-paper overflow-hidden">
+      <img src="assets/images/japon.jpg" alt="Sendero de linternas rojas hacia un santuario japonés de noche" class="absolute inset-0 w-full h-full object-cover" />
+      <div class="shrine-scrim absolute inset-0"></div>
+      <div class="relative z-10 py-24 px-5 max-w-2xl mx-auto text-center">
         <h2 class="font-serif text-3xl font-semibold mb-4">
           <span lang="es">Viaja, descubre, vive.</span>
           <span lang="en">Travel, discover, live.</span>
@@ -331,20 +345,32 @@
       <div class="reveal-item marquee overflow-hidden border-y border-paper/10 py-5 mb-10">
         <div class="marquee-track">
           <div class="flex items-center gap-10 pr-10 font-serif italic text-paper/50 text-lg whitespace-nowrap">
-            <span>Los Roques</span><span>Mérida</span><span>Canaima</span><span>Roraima</span><span>Choroní</span>
+            <span>Los Roques</span><span>Mérida</span><span>Canaima</span><span>Roraima</span><span>Choroní</span><span>Madrid</span><span>Miami</span><span>Cancún</span><span>Bogotá</span><span>Kioto</span>
           </div>
           <div class="flex items-center gap-10 pr-10 font-serif italic text-paper/50 text-lg whitespace-nowrap" aria-hidden="true">
-            <span>Los Roques</span><span>Mérida</span><span>Canaima</span><span>Roraima</span><span>Choroní</span>
+            <span>Los Roques</span><span>Mérida</span><span>Canaima</span><span>Roraima</span><span>Choroní</span><span>Madrid</span><span>Miami</span><span>Cancún</span><span>Bogotá</span><span>Kioto</span>
           </div>
         </div>
       </div>
 
-      <div class="reveal-item flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-sm text-paper/50">
+      <div class="reveal-item flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-sm text-paper/50 mb-6">
         <p class="font-serif italic">
           <span lang="es">ACJ Viajes: viaja, descubre, vive.</span>
           <span lang="en">ACJ Viajes: travel, discover, live.</span>
         </p>
         <p>&copy; <span id="footer-year"></span> ACJ Viajes</p>
+      </div>
+
+      <div class="reveal-item flex flex-wrap gap-x-6 gap-y-2 text-xs text-paper/40 border-t border-paper/10 pt-6">
+        <a href="privacidad.html" class="hover:text-amber transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-amber rounded">
+          <span lang="es">Política de privacidad</span><span lang="en">Privacy policy</span>
+        </a>
+        <a href="terminos.html" class="hover:text-amber transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-amber rounded">
+          <span lang="es">Términos y condiciones</span><span lang="en">Terms &amp; conditions</span>
+        </a>
+        <a href="cookies.html" class="hover:text-amber transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-amber rounded">
+          <span lang="es">Cookies</span><span lang="en">Cookies</span>
+        </a>
       </div>
     </div>
   </footer>

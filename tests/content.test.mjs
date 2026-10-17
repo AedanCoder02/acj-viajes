@@ -408,3 +408,48 @@ test('scrollbar is styled in the brand palette for both Chromium/Safari and Fire
   assert.match(html_css, /::-webkit-scrollbar-track\s*\{/);
   assert.match(html_css, /scrollbar-color:\s*#E3A23B/, 'Firefox fallback via scrollbar-color');
 });
+
+// --- Closing CTA gets its own destination photo; destinations ticker goes international ---
+
+test('the closing CTA section has its own full-bleed destination photo, not flat ink', () => {
+  const contactoSection = html.match(/<section id="contacto"[\s\S]*?<\/section>/)[0];
+  assert.match(contactoSection, /<img[^>]*src="assets\/images\/japon\.jpg"/);
+  assert.match(contactoSection, /class="[^"]*\bshrine-scrim\b[^"]*"/);
+  assert.match(html_css, /\.shrine-scrim\s*\{[^}]*background:\s*linear-gradient/s);
+});
+
+test('a destinations ticker runs directly below the hero, mixing national and international stops', () => {
+  const heroIndex = html.indexOf('id="inicio"');
+  const servicesIndex = html.indexOf('id="servicios"');
+  const betweenHeroAndServices = html.slice(heroIndex, servicesIndex);
+  assert.match(betweenHeroAndServices, /class="[^"]*\bmarquee\b[^"]*"/, 'expected a marquee ticker between the hero and services sections');
+  assert.match(betweenHeroAndServices, /Los Roques/);
+  assert.match(betweenHeroAndServices, /Madrid|Miami|Tokio|Kioto|Cancún|Bogotá|Panamá/);
+});
+
+test('footer marquee also carries international destinations, not only Venezuela', () => {
+  const footerHtml = html.match(/<footer[\s\S]*?<\/footer>/)[0];
+  assert.match(footerHtml, /Madrid|Miami|Tokio|Kioto|Cancún|Bogotá|Panamá/);
+});
+
+// --- Footer legal links: real pages, not dead placeholders ---
+
+test('footer links to real privacy, terms, and cookies pages', () => {
+  const footerHtml = html.match(/<footer[\s\S]*?<\/footer>/)[0];
+  assert.match(footerHtml, /href="privacidad\.html"/);
+  assert.match(footerHtml, /href="terminos\.html"/);
+  assert.match(footerHtml, /href="cookies\.html"/);
+});
+
+for (const page of ['privacidad.html', 'terminos.html', 'cookies.html']) {
+  test(`${page} exists, shares the site's nav/footer shell, and is bilingual`, () => {
+    assert.ok(existsSync(new URL(`../${page}`, import.meta.url)), `${page} should exist`);
+    const pageHtml = readFileSync(new URL(`../${page}`, import.meta.url), 'utf8');
+    assert.match(pageHtml, /<html[^>]*\blang="es"[^>]*\bdata-lang="es"/);
+    assert.match(pageHtml, /<nav id="nav"/);
+    assert.match(pageHtml, /<footer id="footer"/);
+    assert.match(pageHtml, /lang="es"/);
+    assert.match(pageHtml, /lang="en"/);
+    assert.match(pageHtml, /<script type="module" src="assets\/script\.js">/);
+  });
+}
