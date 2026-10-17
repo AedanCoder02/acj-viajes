@@ -179,3 +179,36 @@ test('reduced-motion users still see all content — animated-entrance classes a
   assert.match(reducedMotionBlock, /opacity:\s*1\s*!important/);
   assert.match(reducedMotionBlock, /transform:\s*none\s*!important/);
 });
+
+// --- Deeper motion pass: navbar + logo animation, per-item stagger ---
+
+test('nav has its own entrance animation, distinct from the hero', () => {
+  assert.match(html, /<nav[^>]*class="[^"]*\bnav-anim\b[^"]*"/);
+  assert.match(html_css, /\.nav-anim\s*\{/);
+});
+
+test('the logo is inlined as SVG (not <img>) in the nav, so its paths can be individually animated', () => {
+  const navHtml = html.match(/<nav[\s\S]*?<\/nav>/)[0];
+  assert.doesNotMatch(navHtml, /<img[^>]*logo\.svg/, 'nav should no longer reference the logo via <img>');
+  assert.match(navHtml, /<svg[^>]*class="[^"]*\blogo-mark\b[^"]*"/);
+  assert.match(navHtml, /class="[^"]*\blogo-arc\b[^"]*"/, 'the arc path should be individually targetable for a draw-in animation');
+});
+
+test('logo draw-in animation exists in CSS and is a real stroke animation, not just a fade', () => {
+  assert.match(html_css, /\.logo-arc\s*\{[^}]*stroke-dash(array|offset)/s);
+});
+
+test('every reveal section stages its children one-by-one rather than animating as a single block', () => {
+  const itemCount = (html.match(/class="[^"]*\breveal-item\b[^"]*"/g) || []).length;
+  assert.ok(itemCount >= 8, `expected at least 8 .reveal-item elements across services/diferencia/proceso, found ${itemCount}`);
+  const staggerRule = html_css.match(/\.reveal\.in \.reveal-item[\s\S]*?\n\}/g) || [];
+  const delaySteps = new Set((html_css.match(/\.reveal-item:nth-child\(\d+\)\s*\{\s*transition-delay:\s*[^;]+;/g) || []).map((r) => r.match(/transition-delay:\s*([^;]+);/)[1]));
+  assert.ok(delaySteps.size >= 3, `expected at least 3 distinct nth-child transition-delay steps, found ${delaySteps.size}`);
+});
+
+test('reduced-motion guard also covers the new nav/logo/stagger elements', () => {
+  const reducedMotionBlock = html_css.match(/@media \(prefers-reduced-motion: reduce\) \{[\s\S]*?\n\}/)[0];
+  assert.match(reducedMotionBlock, /\.nav-anim/);
+  assert.match(reducedMotionBlock, /\.logo-arc/);
+  assert.match(reducedMotionBlock, /\.reveal-item/);
+});
