@@ -14,20 +14,26 @@
   <meta property="og:image" content="https://acjviajes.example/assets/images/hero-roraima.jpg" />
   <meta property="og:type" content="website" />
 
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       theme: {
         extend: {
           colors: {
-            forest:     '#1B4B43',
-            terracotta: '#C97B3D',
-            sand:       '#F4EDE2',
-            stone:      '#6B6358',
+            ink:    '#16231F',
+            forest: '#234D3F',
+            amber:  '#E3A23B',
+            clay:   '#9C5A2E',
+            paper:  '#F6F1E7',
+            stone:  '#5B564C',
           },
           fontFamily: {
-            serif: ['Georgia', '"Times New Roman"', 'serif'],
-            sans:  ['Helvetica', 'Arial', 'sans-serif'],
+            serif: ['Spectral', 'Georgia', 'serif'],
+            sans:  ['"Work Sans"', 'Helvetica', 'Arial', 'sans-serif'],
           },
         },
       },
@@ -35,35 +41,34 @@
   </script>
   <link rel="stylesheet" href="assets/styles.css" />
 </head>
-<body class="bg-sand text-forest font-sans">
-  <nav id="nav" class="nav-anim fixed top-0 inset-x-0 z-50 bg-sand/95 backdrop-blur border-b border-forest/10">
+<body class="bg-paper text-ink font-sans">
+  <nav id="nav" class="nav-anim fixed top-0 inset-x-0 z-50 bg-paper/95 backdrop-blur border-b border-ink/10">
     <div class="max-w-6xl mx-auto px-5 flex items-center justify-between h-16">
       <a href="#inicio" class="flex items-center">
         <svg viewBox="0 0 160 40" class="logo-mark h-9 w-auto" role="img" aria-label="ACJ Viajes">
-          <path class="logo-arc" d="M8 28 C8 14, 20 6, 20 6 C20 6, 32 14, 32 28" fill="none" stroke="#1B4B43" stroke-width="2.4" stroke-linecap="round"/>
+          <path class="logo-arc" d="M8 28 L8 20 L14 20 L14 12 L20 12 L20 18 L26 18 L26 9 L32 9 L32 28 Z" fill="none" stroke="#234D3F" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>
           <g class="logo-pin">
-            <path d="M20 6 L20 30" fill="none" stroke="#C97B3D" stroke-width="2.2" stroke-linecap="round"/>
-            <circle cx="20" cy="6" r="2.6" fill="#C97B3D"/>
+            <circle cx="26" cy="9" r="2.4" fill="#E3A23B"/>
           </g>
           <g class="logo-text">
-            <text x="42" y="19" font-family="Georgia, 'Times New Roman', serif" font-weight="700" font-size="15" fill="#1B4B43" letter-spacing="0.5">ACJ Viajes</text>
-            <text x="42" y="31" font-family="Helvetica, Arial, sans-serif" font-size="7" fill="#6B6358" letter-spacing="1.8">VIAJA · DESCUBRE · VIVE</text>
+            <text x="42" y="19" font-family="Spectral, Georgia, serif" font-weight="600" font-size="15" fill="#16231F" letter-spacing="0.2">ACJ Viajes</text>
+            <text x="42" y="31" font-family="Spectral, Georgia, serif" font-style="italic" font-size="9" fill="#5B564C">viaja, descubre, vive</text>
           </g>
         </svg>
       </a>
       <div class="hidden md:flex items-center gap-6 text-sm font-medium">
-        <a href="#servicios" class="hover:text-terracotta focus-visible:outline focus-visible:outline-2 focus-visible:outline-forest rounded">
+        <a href="#servicios" class="hover:text-amber focus-visible:outline focus-visible:outline-2 focus-visible:outline-forest rounded">
           <span lang="es">Servicios</span><span lang="en">Services</span>
         </a>
-        <a href="#diferencia" class="hover:text-terracotta focus-visible:outline focus-visible:outline-2 focus-visible:outline-forest rounded">
+        <a href="#diferencia" class="hover:text-amber focus-visible:outline focus-visible:outline-2 focus-visible:outline-forest rounded">
           <span lang="es">Por qué ACJ</span><span lang="en">Why ACJ</span>
         </a>
-        <a href="#proceso" class="hover:text-terracotta focus-visible:outline focus-visible:outline-2 focus-visible:outline-forest rounded">
+        <a href="#proceso" class="hover:text-amber focus-visible:outline focus-visible:outline-2 focus-visible:outline-forest rounded">
           <span lang="es">Cómo trabajamos</span><span lang="en">How we work</span>
         </a>
       </div>
       <div class="flex items-center gap-3">
-        <button id="lang-toggle" type="button" class="min-h-[44px] border border-forest/30 rounded-full px-4 text-xs font-semibold hover:bg-forest/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-forest" aria-label="Cambiar idioma / Switch language">
+        <button id="lang-toggle" type="button" class="min-h-[44px] border border-ink/30 rounded-full px-4 text-xs font-semibold hover:bg-ink/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-forest" aria-label="Cambiar idioma / Switch language">
           <span lang="es">EN</span><span lang="en">ES</span>
         </button>
         <a href="https://wa.me/000000000?text=Hola%2C%20quiero%20informaci%C3%B3n%20sobre%20los%20servicios%20de%20ACJ%20Viajes" class="whatsapp-cta bg-forest text-white rounded-full px-4 py-2 text-sm font-semibold hover:bg-forest/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest">
@@ -74,26 +79,43 @@
   </nav>
 
   <main>
-    <section id="inicio" class="relative pt-32 pb-24 px-5 text-center overflow-hidden">
-      <img src="assets/images/hero-roraima.jpg" alt="Vista aérea del tepuy Roraima en Venezuela al amanecer" class="absolute inset-0 w-full h-full object-cover" />
-      <div class="absolute inset-0 bg-forest/70"></div>
-      <div class="relative max-w-4xl mx-auto text-sand">
-        <h1 class="hero-anim font-serif text-4xl md:text-5xl font-bold leading-tight mb-6">
-          <span lang="es">Tu agencia de viajes en Venezuela para circuitos a medida.</span>
-          <span lang="en">Your travel agency in Venezuela for <span class="grad-text">custom-made</span> circuits.</span>
-        </h1>
-        <p class="hero-anim d2 text-lg leading-relaxed mb-8 max-w-2xl mx-auto">
-          <span lang="es">En ACJ Viajes, nuestra misión es convertir cada viaje en una experiencia única. Escuchamos tus sueños, diseñamos cada detalle a tu medida y te acompañamos en cada paso, con atención personalizada y exclusiva. Porque no vendemos destinos: creamos recorridos pensados solo para ti.</span>
-          <span lang="en">At ACJ Viajes, our mission is to turn every trip into a singular experience. We listen to your dreams, design every detail around you, and stay with you every step of the way, with personal, exclusive attention. We do not sell destinations: we create journeys designed only for you.</span>
-        </p>
-        <a href="https://wa.me/000000000?text=Hola%2C%20quiero%20informaci%C3%B3n%20sobre%20los%20servicios%20de%20ACJ%20Viajes" class="hero-anim d3 whatsapp-cta inline-block bg-forest text-white rounded-full px-7 py-3 font-semibold hover:bg-forest/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sand">
-          <span lang="es">Diseña tu viaje por WhatsApp</span><span lang="en">Plan your trip on WhatsApp</span>
-        </a>
+    <section id="inicio" class="relative bg-ink text-paper overflow-hidden pt-16">
+      <div class="grid md:grid-cols-[1.1fr_0.9fr] min-h-[640px]">
+        <div class="relative z-10 flex flex-col justify-center px-6 md:px-14 py-16 md:py-0">
+          <h1 class="hero-anim font-serif text-4xl md:text-5xl font-semibold leading-[1.1] mb-4 max-w-md">
+            <span lang="es">Un circuito por Venezuela, trazado solo para ti.</span>
+            <span lang="en">A route through Venezuela, drawn only for you.</span>
+          </h1>
+          <p class="hero-anim font-sans text-paper/70 mb-7">
+            <span lang="es">Agencia de viajes en Venezuela, especialistas en circuitos a medida.</span>
+            <span lang="en">Travel agency in Venezuela, specialists in custom-made circuits.</span>
+          </p>
+          <blockquote class="hero-anim d2 hero-intro border-l-2 border-amber pl-5 mb-9 max-w-sm">
+            <p class="font-serif italic text-lg leading-relaxed text-paper/90">
+              <span lang="es">Escuchamos tus sueños, diseñamos cada detalle a tu medida y te acompañamos en cada paso.</span>
+              <span lang="en">We listen to your dreams, design every detail around you, and stay with you every step of the way.</span>
+            </p>
+            <p class="text-sm text-paper/60 mt-3">
+              <span lang="es">No vendemos destinos: creamos recorridos pensados solo para ti.</span>
+              <span lang="en">We don't sell destinations: we create journeys designed only for you.</span>
+            </p>
+          </blockquote>
+          <a href="https://wa.me/000000000?text=Hola%2C%20quiero%20informaci%C3%B3n%20sobre%20los%20servicios%20de%20ACJ%20Viajes" class="hero-anim d3 whatsapp-cta inline-block w-fit bg-amber text-ink rounded-full px-7 py-3 font-semibold hover:bg-amber/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paper">
+            <span lang="es">Diseña tu viaje por WhatsApp</span><span lang="en">Plan your trip on WhatsApp</span>
+          </a>
+        </div>
+        <div class="tepui-edge relative min-h-[320px] md:min-h-0">
+          <img src="assets/images/hero-roraima.jpg" alt="Vista aérea del tepuy Roraima en Venezuela al amanecer" class="absolute inset-0 w-full h-full object-cover" />
+          <div class="absolute inset-0 bg-gradient-to-t from-ink/50 via-transparent to-transparent"></div>
+        </div>
       </div>
+      <svg class="tepui-divider block w-full" viewBox="0 0 400 28" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 28 L0 18 L30 18 L30 6 L55 6 L55 14 L85 14 L85 2 L110 2 L110 20 L150 20 L150 10 L175 10 L175 22 L210 22 L210 4 L235 4 L235 16 L270 16 L270 8 L300 8 L300 24 L330 24 L330 12 L360 12 L360 20 L400 20 L400 28 Z" fill="#F6F1E7" />
+      </svg>
     </section>
     <section id="servicios" class="reveal py-20 px-5 max-w-6xl mx-auto">
-      <h2 class="font-serif text-3xl font-bold text-center mb-12">
-        <span lang="es">Nuestros <span class="grad-text">servicios</span></span>
+      <h2 class="font-serif text-3xl font-semibold text-center mb-12">
+        <span lang="es">Nuestros servicios</span>
         <span lang="en">Our services</span>
       </h2>
       <div class="grid md:grid-cols-3 gap-8">
@@ -189,12 +211,13 @@
     </section>
 
     <section id="proceso" class="reveal py-20 px-5 max-w-4xl mx-auto">
-      <h2 class="font-serif text-3xl font-bold text-center mb-12">
+      <h2 class="font-serif text-3xl font-semibold text-center mb-12">
         <span lang="es">Cómo trabajamos</span>
         <span lang="en">How we work</span>
       </h2>
       <div class="grid md:grid-cols-3 gap-8 text-center">
         <div class="reveal-item">
+          <div class="step-number font-serif text-3xl text-amber mb-2" aria-hidden="true">1</div>
           <h3 class="font-semibold mb-2">
             <span lang="es">Antes del viaje</span><span lang="en">Before the trip</span>
           </h3>
@@ -204,6 +227,7 @@
           </p>
         </div>
         <div class="reveal-item">
+          <div class="step-number font-serif text-3xl text-amber mb-2" aria-hidden="true">2</div>
           <h3 class="font-semibold mb-2">
             <span lang="es">Durante el viaje</span><span lang="en">During the trip</span>
           </h3>
@@ -213,6 +237,7 @@
           </p>
         </div>
         <div class="reveal-item">
+          <div class="step-number font-serif text-3xl text-amber mb-2" aria-hidden="true">3</div>
           <h3 class="font-semibold mb-2">
             <span lang="es">Después del viaje</span><span lang="en">After the trip</span>
           </h3>

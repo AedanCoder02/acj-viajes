@@ -98,11 +98,15 @@ test('every WhatsApp CTA has a real wa.me href in the raw markup, not a bare "#"
   }
 });
 
-test('primary CTA buttons use forest (not terracotta) background for AA contrast', () => {
+test('every CTA pairs its background with a text color that actually contrasts (no light-on-light or light-on-mid)', () => {
   const ctaClassAttrs = [...html.matchAll(/<a[^>]*class="([^"]*whatsapp-cta[^"]*)"/g)].map((m) => m[1]);
   assert.ok(ctaClassAttrs.length >= 3, 'expected at least 3 whatsapp-cta elements');
   for (const classAttr of ctaClassAttrs) {
-    assert.doesNotMatch(classAttr, /bg-terracotta/, `CTA class "${classAttr}" should not use bg-terracotta (fails AA contrast)`);
+    const isDarkBg = /bg-forest\b/.test(classAttr);
+    const isAmberBg = /bg-amber\b/.test(classAttr);
+    assert.ok(isDarkBg || isAmberBg, `CTA class "${classAttr}" should use bg-forest or bg-amber`);
+    if (isDarkBg) assert.match(classAttr, /text-(white|paper)\b/, `dark CTA "${classAttr}" needs light text`);
+    if (isAmberBg) assert.match(classAttr, /text-ink\b/, `amber CTA "${classAttr}" needs dark text`);
   }
 });
 
@@ -157,9 +161,8 @@ test('every reveal-on-scroll section is covered by the JS observer target select
   assert.ok(revealCount >= 4, `expected at least 4 .reveal elements across services/diferencia/proceso/contacto, found ${revealCount}`);
 });
 
-test('hero headline carries a gradient accent on one word, in the new palette (not Promar\'s green/cyan)', () => {
-  assert.match(html, /<span class="grad-text"[^>]*>[^<]+<\/span>/);
-  assert.doesNotMatch(html, /#4DB820|#22B4D4/i);
+test('headlines avoid the single-accent-word tell — no word gets its own color treatment', () => {
+  assert.doesNotMatch(html, /grad-text/, 'single-word gradient accents read as a generic AI-design tell; removed in favor of real typographic weight');
 });
 
 test('a floating WhatsApp FAB is reachable from anywhere on the page', () => {
@@ -211,4 +214,45 @@ test('reduced-motion guard also covers the new nav/logo/stagger elements', () =>
   assert.match(reducedMotionBlock, /\.nav-anim/);
   assert.match(reducedMotionBlock, /\.logo-arc/);
   assert.match(reducedMotionBlock, /\.reveal-item/);
+});
+
+// --- Visual identity pass: typography, tepui motif, deliberate shape (frontend-design) ---
+
+test('the page uses an intentional Google Fonts pairing, not system-default Georgia/Helvetica', () => {
+  assert.match(html, /fonts\.googleapis\.com[^"]*Spectral/);
+  assert.match(html, /fonts\.googleapis\.com[^"]*Work\+Sans/);
+  assert.match(html, /serif:\s*\['Spectral'/, 'Spectral should be the primary serif, not just present as a fallback somewhere');
+  assert.doesNotMatch(html, /serif:\s*\['Georgia'/, 'Georgia should not be the primary declared serif');
+});
+
+test('old cream/terracotta tokens are fully retired, not left mixed in with the new palette', () => {
+  assert.doesNotMatch(html, /\bbg-sand\b|\btext-terracotta\b|\bbg-terracotta\b|\bhover:text-terracotta\b/);
+});
+
+test('logo subtitle reads as considered copy, not a tracked-out all-caps label with middle dots', () => {
+  const navHtml = html.match(/<nav[\s\S]*?<\/nav>/)[0];
+  assert.doesNotMatch(navHtml, /·/, 'middle-dot-separated metadata is a generic template tell');
+  assert.doesNotMatch(navHtml, /VIAJA/, 'tracked-out all-caps tagline should be replaced with sentence case');
+  assert.match(navHtml, /viaja, descubre, vive/i);
+});
+
+test('the hero has an asymmetric split with a tepui-silhouette edge, not a flat rectangle', () => {
+  const heroSection = html.match(/<section id="inicio"[\s\S]*?<\/section>/)[0];
+  assert.match(heroSection, /tepui-edge/, 'expected a clip-path element carrying the tepui-skyline shape');
+  assert.match(html_css, /\.tepui-edge\s*\{[^}]*clip-path/s);
+});
+
+test('a tepui-skyline divider separates the hero from the next section, echoing the clip-path motif', () => {
+  assert.match(html, /tepui-divider/);
+});
+
+test('the mission-statement intro is visually distinguished from the headline, not a plain paragraph underneath it', () => {
+  const heroSection = html.match(/<section id="inicio"[\s\S]*?<\/section>/)[0];
+  assert.match(heroSection, /class="[^"]*\bhero-intro\b[^"]*"/);
+});
+
+test('"Cómo trabajamos" numbers its three real steps — the one place in the page content is an actual sequence', () => {
+  const procesoSection = html.match(/<section id="proceso"[\s\S]*?<\/section>/)[0];
+  const numbers = [...procesoSection.matchAll(/class="[^"]*\bstep-number\b[^"]*"[^>]*>\s*(\d)/g)].map((m) => m[1]);
+  assert.deepEqual(numbers, ['1', '2', '3']);
 });
