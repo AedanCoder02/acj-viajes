@@ -312,26 +312,48 @@ test('route-line color stays visible against a dark night photo, not a dark-brow
   assert.doesNotMatch(html_css, /border-top:\s*2px dashed #9C5A2E/, 'clay was invisible against the dark background');
 });
 
-test('services opens with its own distinct white-sand beach banner, not a repeat of the hospedaje card photo', () => {
-  const servicesSection = html.match(/<section id="servicios"[\s\S]*?<\/section>/)[0];
-  const bannerSection = servicesSection.split('Nuestros servicios')[0];
-  assert.match(bannerSection, /<img[^>]*src="assets\/images\/playa\.jpg"/, 'banner should use the dedicated top-down beach photo');
-  assert.doesNotMatch(bannerSection, /hospedaje\.jpg/, 'banner must not repeat the card image behind it');
-  assert.match(servicesSection, /class="[^"]*\bbanner-fade\b[^"]*"/);
-  assert.match(html_css, /\.banner-fade\s*\{[^}]*background:\s*linear-gradient/s);
+test('route-line passes through the exact vertical center of the step-glow circles, not above or below them', () => {
+  const glowHeightMatch = html_css.match(/\.step-glow\s*\{[^}]*height:\s*([\d.]+)rem/s);
+  assert.ok(glowHeightMatch, 'expected .step-glow to declare an explicit height');
+  const glowHeight = Number(glowHeightMatch[1]);
+  const routeLineBlock = html_css.match(/@media \(min-width: 768px\) \{\s*\.route-line \{[\s\S]*?\n  \}/)[0];
+  const topMatch = routeLineBlock.match(/top:\s*([\d.]+)rem/);
+  assert.ok(topMatch, 'expected .route-line to declare an explicit top offset');
+  assert.equal(Number(topMatch[1]), glowHeight / 2, `route-line top (${topMatch[1]}rem) should equal half the circle height (${glowHeight / 2}rem) to center on it`);
 });
 
-test('the beach banner is tall enough for the water and sand to actually read, and stays mostly unobstructed before fading', () => {
-  const bannerWrapper = html.match(/<div class="relative ([^"]*h-\[?\d[^"]*)">\s*<img[^>]*playa\.jpg/);
-  assert.ok(bannerWrapper, 'expected the banner wrapper div right before the playa.jpg img');
-  const heightClasses = bannerWrapper[1];
-  const mobileHeight = Number(heightClasses.match(/(?:^|\s)h-(\d+)\b/)?.[1] || 0);
-  assert.ok(mobileHeight >= 64, `banner should be taller than the old h-48, found h-${mobileHeight}`);
+test('step numbers are tightly centered inside their glow circles, not pushed off-center by default line-height', () => {
+  const procesoSection = html.match(/<section id="proceso"[\s\S]*?<\/section>/)[0];
+  const stepSpans = [...procesoSection.matchAll(/<span class="([^"]*step-number[^"]*)"/g)];
+  assert.equal(stepSpans.length, 3);
+  for (const [, classAttr] of stepSpans) {
+    assert.match(classAttr, /\bleading-none\b/, `step-number class "${classAttr}" should reset line-height for clean centering`);
+  }
+});
 
-  const fadeRule = html_css.match(/\.banner-fade\s*\{[^}]*\}/s)[0];
-  const transparentStops = [...fadeRule.matchAll(/rgba\(246, 241, 231, 0\)\s+(\d+)%/g)].map((m) => Number(m[1]));
-  assert.ok(transparentStops.length >= 2, 'expected the gradient to hold fully transparent across most of the banner, not ramp from 0%');
-  assert.ok(Math.max(...transparentStops) >= 50, `transparent zone should extend at least halfway down, found stops at ${transparentStops}`);
+test('services uses its own distinct white-sand beach photo as backdrop, not a repeat of the hospedaje card photo', () => {
+  const servicesSection = html.match(/<section id="servicios"[\s\S]*?<\/section>/)[0];
+  const beforeHeading = servicesSection.split('Nuestros servicios')[0];
+  assert.match(beforeHeading, /<img[^>]*src="assets\/images\/playa\.jpg"/, 'should use the dedicated top-down beach photo as the section background');
+  assert.match(servicesSection, /class="[^"]*\bbeach-wash\b[^"]*"/);
+  assert.match(html_css, /\.beach-wash\s*\{[^}]*background:\s*rgba/s);
+});
+
+test('the beach photo is the background of the whole services section, including the card grid, not a strip confined above it', () => {
+  const servicesSection = html.match(/<section id="servicios"[\s\S]*?<\/section>/)[0];
+  assert.match(
+    servicesSection,
+    /<section id="servicios"[^>]*>\s*<img[^>]*src="assets\/images\/playa\.jpg"[^>]*class="[^"]*\babsolute\b[^"]*\binset-0\b[^"]*\bw-full\b[^"]*\bh-full\b[^"]*"/,
+    'playa.jpg should be an absolute inset-0 background directly on the section, covering its full height — not confined to a separate shorter banner div'
+  );
+  assert.doesNotMatch(servicesSection, /<div class="relative h-\[/, 'should no longer have a separate fixed-height banner wrapper');
+});
+
+test('each service card has its own legible panel so its text reads clearly against the photo behind it', () => {
+  const servicesSection = html.match(/<section id="servicios"[\s\S]*?<\/section>/)[0];
+  const panelCount = (servicesSection.match(/class="[^"]*\bcard-panel\b[^"]*"/g) || []).length;
+  assert.equal(panelCount, 3, `expected a card-panel wrapper in each of the 3 cards, found ${panelCount}`);
+  assert.match(html_css, /\.card-panel\s*\{[^}]*background:/s);
 });
 
 test('diferencia is a full-bleed city photo with the same dark-to-clear gradient treatment as the hero', () => {
@@ -376,4 +398,13 @@ test('reduced-motion guard covers the footer marquee and step-glow pulse', () =>
   const reducedMotionBlock = html_css.match(/@media \(prefers-reduced-motion: reduce\) \{[\s\S]*?\n\}/)[0];
   assert.match(reducedMotionBlock, /\.marquee-track/);
   assert.match(reducedMotionBlock, /\.step-glow/);
+});
+
+// --- Custom scrollbar: branded, not the bare OS default ---
+
+test('scrollbar is styled in the brand palette for both Chromium/Safari and Firefox', () => {
+  assert.match(html_css, /::-webkit-scrollbar\s*\{/);
+  assert.match(html_css, /::-webkit-scrollbar-thumb\s*\{[^}]*#E3A23B/s, 'thumb should use the amber accent');
+  assert.match(html_css, /::-webkit-scrollbar-track\s*\{/);
+  assert.match(html_css, /scrollbar-color:\s*#E3A23B/, 'Firefox fallback via scrollbar-color');
 });
