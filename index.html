@@ -79,38 +79,39 @@
   </nav>
 
   <main>
-    <section id="inicio" class="relative bg-ink text-paper overflow-hidden pt-16">
-      <div class="grid md:grid-cols-[1.1fr_0.9fr] min-h-[640px]">
-        <div class="relative z-10 flex flex-col justify-center px-6 md:px-14 py-16 md:py-0">
-          <h1 class="hero-anim font-serif text-4xl md:text-5xl font-semibold leading-[1.1] mb-4 max-w-md">
-            <span lang="es">Un circuito por Venezuela, trazado solo para ti.</span>
-            <span lang="en">A route through Venezuela, drawn only for you.</span>
-          </h1>
-          <p class="hero-anim font-sans text-paper/70 mb-7">
-            <span lang="es">Agencia de viajes en Venezuela, especialistas en circuitos a medida.</span>
-            <span lang="en">Travel agency in Venezuela, specialists in custom-made circuits.</span>
+    <section id="inicio" class="relative bg-ink text-paper overflow-hidden pt-16 min-h-[640px] flex items-center">
+      <img src="assets/images/hero-roraima.jpg" alt="Vista aérea del tepuy Roraima en Venezuela al amanecer" class="absolute inset-0 w-full h-full object-cover" />
+      <div class="hero-scrim absolute inset-0"></div>
+      <div class="relative z-10 flex flex-col justify-center px-6 md:px-14 py-16 md:py-0 max-w-xl">
+        <h1 class="hero-anim font-serif text-4xl md:text-5xl font-semibold leading-[1.1] mb-4 max-w-md">
+          <span lang="es">Un circuito por Venezuela, trazado solo para ti.</span>
+          <span lang="en">A route through Venezuela, drawn only for you.</span>
+        </h1>
+        <p class="hero-anim font-sans text-paper/70 mb-7">
+          <span lang="es">Agencia de viajes en Venezuela, especialistas en circuitos a medida.</span>
+          <span lang="en">Travel agency in Venezuela, specialists in custom-made circuits.</span>
+        </p>
+        <blockquote class="hero-anim d2 hero-intro border-l-2 border-amber pl-5 mb-9 max-w-sm">
+          <p class="font-serif italic text-lg leading-relaxed text-paper/90">
+            <span lang="es">Escuchamos tus sueños, diseñamos cada detalle a tu medida y te acompañamos en cada paso.</span>
+            <span lang="en">We listen to your dreams, design every detail around you, and stay with you every step of the way.</span>
           </p>
-          <blockquote class="hero-anim d2 hero-intro border-l-2 border-amber pl-5 mb-9 max-w-sm">
-            <p class="font-serif italic text-lg leading-relaxed text-paper/90">
-              <span lang="es">Escuchamos tus sueños, diseñamos cada detalle a tu medida y te acompañamos en cada paso.</span>
-              <span lang="en">We listen to your dreams, design every detail around you, and stay with you every step of the way.</span>
-            </p>
-            <p class="text-sm text-paper/60 mt-3">
-              <span lang="es">No vendemos destinos: creamos recorridos pensados solo para ti.</span>
-              <span lang="en">We don't sell destinations: we create journeys designed only for you.</span>
-            </p>
-          </blockquote>
-          <a href="https://wa.me/000000000?text=Hola%2C%20quiero%20informaci%C3%B3n%20sobre%20los%20servicios%20de%20ACJ%20Viajes" class="hero-anim d3 whatsapp-cta inline-block w-fit bg-amber text-ink rounded-full px-7 py-3 font-semibold hover:bg-amber/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paper">
-            <span lang="es">Diseña tu viaje por WhatsApp</span><span lang="en">Plan your trip on WhatsApp</span>
-          </a>
-        </div>
-        <div class="diagonal-edge relative min-h-[320px] md:min-h-0">
-          <img src="assets/images/hero-roraima.jpg" alt="Vista aérea del tepuy Roraima en Venezuela al amanecer" class="absolute inset-0 w-full h-full object-cover" />
-          <div class="absolute inset-0 bg-gradient-to-t from-ink/50 via-transparent to-transparent"></div>
-        </div>
+          <p class="text-sm text-paper/60 mt-3">
+            <span lang="es">No vendemos destinos: creamos recorridos pensados solo para ti.</span>
+            <span lang="en">We don't sell destinations: we create journeys designed only for you.</span>
+          </p>
+        </blockquote>
+        <a href="https://wa.me/000000000?text=Hola%2C%20quiero%20informaci%C3%B3n%20sobre%20los%20servicios%20de%20ACJ%20Viajes" class="hero-anim d3 whatsapp-cta inline-block w-fit bg-amber text-ink rounded-full px-7 py-3 font-semibold hover:bg-amber/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paper">
+          <span lang="es">Diseña tu viaje por WhatsApp</span><span lang="en">Plan your trip on WhatsApp</span>
+        </a>
       </div>
     </section>
-    <section id="servicios" class="reveal py-20 px-5 max-w-6xl mx-auto">
+    <section id="servicios" class="reveal relative">
+      <div class="relative h-48 md:h-64">
+        <img src="assets/images/hospedaje.jpg" alt="Cabaña frente a la playa en Los Roques, Venezuela" class="absolute inset-0 w-full h-full object-cover" />
+        <div class="banner-fade absolute inset-0"></div>
+      </div>
+      <div class="py-20 px-5 max-w-6xl mx-auto">
       <h2 class="font-serif text-3xl font-semibold text-center mb-12">
         <span lang="es">Nuestros servicios</span>
         <span lang="en">Our services</span>
@@ -171,10 +172,13 @@
           </p>
         </article>
       </div>
+      </div>
     </section>
 
-    <section id="diferencia" class="reveal relative bg-ink text-paper">
-      <div class="py-20 px-5 max-w-4xl mx-auto">
+    <section id="diferencia" class="reveal relative bg-ink text-paper overflow-hidden">
+      <img src="assets/images/ciudad.jpg" alt="Atardecer sobre un pueblo colonial andino en Venezuela" class="absolute inset-0 w-full h-full object-cover" />
+      <div class="city-scrim absolute inset-0"></div>
+      <div class="relative z-10 py-20 px-5 max-w-4xl mx-auto">
         <p class="text-xl md:text-2xl font-serif font-semibold leading-snug mb-12 max-w-2xl">
           <span lang="es">Otras agencias venden servicios; en ACJ Viajes creamos tu experiencia. Un asesor exclusivo, un plan a tu medida y respaldo en cada paso. ACJ Viajes: viaja, descubre, vive.</span>
           <span lang="en">Other agencies sell services; at ACJ Viajes we create your experience. One exclusive advisor, a plan made for you, and support at every step. ACJ Viajes: travel, discover, live.</span>

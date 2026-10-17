@@ -68,10 +68,20 @@ html[data-lang="en"] [lang="es"] { display: none; }
 
 #nav.scrolled { box-shadow: 0 2px 20px rgba(22, 35, 31, 0.15); }
 
+.hero-scrim {
+  background: linear-gradient(180deg, #16231F 0%, #16231F 60%, rgba(22, 35, 31, 0.1) 100%);
+}
+.city-scrim {
+  background: linear-gradient(180deg, #16231F 0%, #16231F 60%, rgba(22, 35, 31, 0.1) 100%);
+}
 @media (min-width: 768px) {
-  .diagonal-edge {
-    clip-path: polygon(12% 0, 100% 0, 100% 100%, 0 100%);
+  .hero-scrim, .city-scrim {
+    background: linear-gradient(90deg, #16231F 0%, #16231F 42%, rgba(22, 35, 31, 0.15) 78%, rgba(22, 35, 31, 0) 100%);
   }
+}
+
+.banner-fade {
+  background: linear-gradient(180deg, rgba(246, 241, 231, 0) 0%, #F6F1E7 95%);
 }
 
 .fab-whatsapp {

@@ -80,7 +80,7 @@ test('every transition/animation in styles.css is covered by the reduced-motion 
 // --- Final-review fix pass ---
 
 test('hero and all three service images exist on disk with non-empty alt text', () => {
-  const images = ['assets/images/hero-roraima.jpg', 'assets/images/circuitos.jpg', 'assets/images/boleteria.jpg', 'assets/images/hospedaje.jpg'];
+  const images = ['assets/images/hero-roraima.jpg', 'assets/images/circuitos.jpg', 'assets/images/boleteria.jpg', 'assets/images/hospedaje.jpg', 'assets/images/ciudad.jpg'];
   for (const img of images) {
     assert.ok(existsSync(new URL(`../${img}`, import.meta.url)), `${img} should exist`);
     const re = new RegExp(`<img[^>]*src="${img}"[^>]*alt="[^"]+"`);
@@ -236,11 +236,17 @@ test('logo subtitle reads as considered copy, not a tracked-out all-caps label w
   assert.match(navHtml, /viaja, descubre, vive/i);
 });
 
-test('the hero has an asymmetric split cut by a single clean diagonal, not a jagged stepped skyline', () => {
+test('the hero image is full-bleed across the whole section, not confined to a split panel', () => {
   const heroSection = html.match(/<section id="inicio"[\s\S]*?<\/section>/)[0];
-  assert.match(heroSection, /diagonal-edge/, 'expected a clip-path element carrying the diagonal cut');
-  assert.match(html_css, /\.diagonal-edge\s*\{[^}]*clip-path:\s*polygon\(\s*\d+%?\s+0/s, 'a 2-point diagonal polygon, not a multi-step jagged one');
-  assert.doesNotMatch(html, /tepui/i, 'the stepped tepui-silhouette motif was rejected and should be fully gone');
+  assert.doesNotMatch(heroSection, /md:grid-cols/, 'hero should no longer be a hard two-panel split');
+  assert.doesNotMatch(heroSection, /diagonal-edge|tepui/i, 'hard-edged shape treatments were rejected in favor of a gradient scrim');
+  assert.match(heroSection, /<img[^>]*src="assets\/images\/hero-roraima\.jpg"[^>]*class="[^"]*\bw-full\b[^"]*\bh-full\b[^"]*"/, 'image should cover the full width and height of the section');
+});
+
+test('the hero image fades from a dark legible scrim into the clear photo, not a flat translucent block', () => {
+  const heroSection = html.match(/<section id="inicio"[\s\S]*?<\/section>/)[0];
+  assert.match(heroSection, /class="[^"]*\bhero-scrim\b[^"]*"/);
+  assert.match(html_css, /\.hero-scrim\s*\{[^}]*background:\s*linear-gradient/s);
 });
 
 test('the mission-statement intro is visually distinguished from the headline, not a plain paragraph underneath it', () => {
@@ -283,6 +289,20 @@ test('differentiation bullets read as an editorial list, not another grid of ide
 test('the three process steps are visually connected by a route line, echoing "circuitos a medida"', () => {
   const procesoSection = html.match(/<section id="proceso"[\s\S]*?<\/section>/)[0];
   assert.match(procesoSection, /route-line/);
+});
+
+test('services opens with a destination photo banner (beach) that fades into the paper background, not flat white', () => {
+  const servicesSection = html.match(/<section id="servicios"[\s\S]*?<\/section>/)[0];
+  assert.match(servicesSection, /<img[^>]*src="assets\/images\/hospedaje\.jpg"/, 'reuses the Los Roques beach photo as an atmospheric opener');
+  assert.match(servicesSection, /class="[^"]*\bbanner-fade\b[^"]*"/);
+  assert.match(html_css, /\.banner-fade\s*\{[^}]*background:\s*linear-gradient/s);
+});
+
+test('diferencia is a full-bleed city photo with the same dark-to-clear gradient treatment as the hero', () => {
+  const diferenciaSection = html.match(/<section id="diferencia"[\s\S]*?<\/section>/)[0];
+  assert.match(diferenciaSection, /<img[^>]*src="assets\/images\/ciudad\.jpg"/);
+  assert.match(diferenciaSection, /class="[^"]*\bcity-scrim\b[^"]*"/);
+  assert.match(html_css, /\.city-scrim\s*\{[^}]*background:\s*linear-gradient/s);
 });
 
 test('reduced-motion guard also covers the new nav-item stagger elements', () => {
