@@ -12,12 +12,13 @@ export function buildWhatsAppUrl(number, message) {
 export function toggleLanguage(doc = document) {
   const current = doc.documentElement.getAttribute('data-lang');
   const next = current === 'es' ? 'en' : 'es';
-  doc.documentElement.setAttribute('data-lang', next);
+  applyLanguage(next, doc);
   return next;
 }
 
 export function applyLanguage(lang, doc = document) {
   doc.documentElement.setAttribute('data-lang', lang);
+  doc.documentElement.setAttribute('lang', lang);
 }
 
 export function currentYear(date = new Date()) {

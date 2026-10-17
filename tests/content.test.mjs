@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
 
 const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const html_css = readFileSync(new URL('../assets/styles.css', import.meta.url), 'utf8');
@@ -75,4 +75,69 @@ test('footer carries the tagline in both languages and a dynamic year', () => {
 test('every transition/animation in styles.css is covered by the reduced-motion guard', () => {
   const guardIndex = html_css.indexOf('prefers-reduced-motion');
   assert.ok(guardIndex > -1);
+});
+
+// --- Final-review fix pass ---
+
+test('hero and all three service images exist on disk with non-empty alt text', () => {
+  const images = ['assets/images/hero-roraima.jpg', 'assets/images/circuitos.jpg', 'assets/images/boleteria.jpg', 'assets/images/hospedaje.jpg'];
+  for (const img of images) {
+    assert.ok(existsSync(new URL(`../${img}`, import.meta.url)), `${img} should exist`);
+    const re = new RegExp(`<img[^>]*src="${img}"[^>]*alt="[^"]+"`);
+    assert.match(html, re, `${img} should be referenced with non-empty alt text`);
+  }
+});
+
+test('every WhatsApp CTA has a real wa.me href in the raw markup, not a bare "#"', () => {
+  const tags = [...html.matchAll(/<a\s[^>]*>/g)].map((m) => m[0]).filter((tag) => /class="[^"]*\bwhatsapp-cta\b[^"]*"/.test(tag));
+  assert.ok(tags.length >= 3, 'expected at least 3 whatsapp-cta links');
+  for (const tag of tags) {
+    const hrefMatch = tag.match(/href="([^"]+)"/);
+    assert.ok(hrefMatch, `whatsapp-cta tag missing href: ${tag}`);
+    assert.match(hrefMatch[1], /^https:\/\/wa\.me\/0+\?text=/);
+  }
+});
+
+test('primary CTA buttons use forest (not terracotta) background for AA contrast', () => {
+  const ctaClassAttrs = [...html.matchAll(/<a[^>]*class="([^"]*whatsapp-cta[^"]*)"/g)].map((m) => m[1]);
+  assert.ok(ctaClassAttrs.length >= 3, 'expected at least 3 whatsapp-cta elements');
+  for (const classAttr of ctaClassAttrs) {
+    assert.doesNotMatch(classAttr, /bg-terracotta/, `CTA class "${classAttr}" should not use bg-terracotta (fails AA contrast)`);
+  }
+});
+
+test('nav WhatsApp CTA is reachable on mobile (not inside the hidden md:flex wrapper)', () => {
+  const navHtml = html.match(/<nav[\s\S]*?<\/nav>/)[0];
+  const hiddenWrapper = navHtml.match(/<div class="hidden md:flex[\s\S]*?<\/div>/);
+  assert.ok(hiddenWrapper, 'expected the hidden md:flex nav wrapper to exist');
+  assert.doesNotMatch(hiddenWrapper[0], /whatsapp-cta/);
+  assert.match(navHtml, /whatsapp-cta/);
+});
+
+test('language toggle button meets the 44px minimum tap target', () => {
+  const navHtml = html.match(/<nav[\s\S]*?<\/nav>/)[0];
+  const toggleTag = navHtml.match(/<button id="lang-toggle"[^>]*>/)[0];
+  assert.match(toggleTag, /min-h-\[44px\]/);
+});
+
+test('head has a canonical link and Open Graph tags including og:image', () => {
+  assert.match(html, /<link rel="canonical" href="[^"]+" \/>/);
+  assert.match(html, /<meta property="og:title" content="[^"]+" \/>/);
+  assert.match(html, /<meta property="og:description" content="[^"]+" \/>/);
+  assert.match(html, /<meta property="og:image" content="[^"]+" \/>/);
+});
+
+test('page declares a favicon', () => {
+  assert.match(html, /<link rel="icon"[^>]*>/);
+});
+
+test('interactive elements have hover and focus-visible states', () => {
+  const hoverCount = (html.match(/hover:/g) || []).length;
+  const focusCount = (html.match(/focus-visible:/g) || []).length;
+  assert.ok(hoverCount >= 5, `expected at least 5 hover: classes, found ${hoverCount}`);
+  assert.ok(focusCount >= 4, `expected at least 4 focus-visible: classes, found ${focusCount}`);
+});
+
+test('differentiation bullet English translation is a complete sentence', () => {
+  assert.match(html, /we don't just issue tickets/);
 });

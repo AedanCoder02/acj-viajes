@@ -26,6 +26,14 @@ test('toggleLanguage flips es -> en and reports the new value', () => {
   assert.equal(fakeDoc.documentElement._lang, 'en');
 });
 
+test('toggleLanguage also updates the html lang attribute, not just data-lang', () => {
+  const attrs = { 'data-lang': 'es', lang: 'es' };
+  const fakeDoc = { documentElement: { getAttribute: (name) => attrs['data-lang'], setAttribute: (name, v) => { attrs[name] = v; } } };
+  toggleLanguage(fakeDoc);
+  assert.equal(attrs['data-lang'], 'en');
+  assert.equal(attrs.lang, 'en');
+});
+
 test('currentYear reads the year from a given date', () => {
   assert.equal(currentYear(new Date('2026-06-15T12:00:00Z')), 2026);
 });
