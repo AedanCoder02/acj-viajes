@@ -7,12 +7,67 @@
   <meta name="description" content="ACJ Viajes: agencia de viajes en Venezuela especializada en circuitos a medida, boletería y hospedaje nacional e internacional, con un asesor exclusivo en cada paso." />
 
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            forest:     '#1B4B43',
+            terracotta: '#C97B3D',
+            sand:       '#F4EDE2',
+            stone:      '#6B6358',
+          },
+          fontFamily: {
+            serif: ['Georgia', '"Times New Roman"', 'serif'],
+            sans:  ['Helvetica', 'Arial', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
   <link rel="stylesheet" href="assets/styles.css" />
 </head>
-<body>
-  <nav id="nav"></nav>
+<body class="bg-sand text-forest font-sans">
+  <nav id="nav" class="fixed top-0 inset-x-0 z-50 bg-sand/95 backdrop-blur border-b border-forest/10">
+    <div class="max-w-6xl mx-auto px-5 flex items-center justify-between h-16">
+      <a href="#inicio" class="flex items-center">
+        <img src="assets/logo.svg" alt="ACJ Viajes" class="h-9 w-auto" />
+      </a>
+      <div class="hidden md:flex items-center gap-6 text-sm font-medium">
+        <a href="#servicios">
+          <span lang="es">Servicios</span><span lang="en">Services</span>
+        </a>
+        <a href="#diferencia">
+          <span lang="es">Por qué ACJ</span><span lang="en">Why ACJ</span>
+        </a>
+        <a href="#proceso">
+          <span lang="es">Cómo trabajamos</span><span lang="en">How we work</span>
+        </a>
+        <a href="#" class="whatsapp-cta bg-terracotta text-white rounded-full px-4 py-2 text-sm font-semibold">
+          <span lang="es">Hablar con un asesor</span><span lang="en">Talk to an advisor</span>
+        </a>
+      </div>
+      <button id="lang-toggle" type="button" class="border border-forest/30 rounded-full px-3 py-1 text-xs font-semibold" aria-label="Cambiar idioma / Switch language">
+        <span lang="es">EN</span><span lang="en">ES</span>
+      </button>
+    </div>
+  </nav>
 
-  <main></main>
+  <main>
+    <section id="inicio" class="pt-32 pb-20 px-5 max-w-4xl mx-auto text-center">
+      <h1 class="font-serif text-4xl md:text-5xl font-bold leading-tight mb-6">
+        <span lang="es">Tu agencia de viajes en Venezuela para circuitos a medida.</span>
+        <span lang="en">Your travel agency in Venezuela for custom-made circuits.</span>
+      </h1>
+      <p class="text-lg text-stone leading-relaxed mb-8 max-w-2xl mx-auto">
+        <span lang="es">En ACJ Viajes, nuestra misión es convertir cada viaje en una experiencia única. Escuchamos tus sueños, diseñamos cada detalle a tu medida y te acompañamos en cada paso, con atención personalizada y exclusiva. Porque no vendemos destinos: creamos recorridos pensados solo para ti.</span>
+        <span lang="en">At ACJ Viajes, our mission is to turn every trip into a singular experience. We listen to your dreams, design every detail around you, and stay with you every step of the way, with personal, exclusive attention. We do not sell destinations: we create journeys designed only for you.</span>
+      </p>
+      <a href="#" class="whatsapp-cta inline-block bg-forest text-white rounded-full px-7 py-3 font-semibold">
+        <span lang="es">Diseña tu viaje por WhatsApp</span><span lang="en">Plan your trip on WhatsApp</span>
+      </a>
+    </section>
+  </main>
 
   <footer id="footer"></footer>
 
