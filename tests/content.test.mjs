@@ -216,7 +216,7 @@ test('reduced-motion guard also covers the new nav/logo/stagger elements', () =>
   assert.match(reducedMotionBlock, /\.reveal-item/);
 });
 
-// --- Visual identity pass: typography, tepui motif, deliberate shape (frontend-design) ---
+// --- Visual identity pass: typography, deliberate shape (frontend-design) ---
 
 test('the page uses an intentional Google Fonts pairing, not system-default Georgia/Helvetica', () => {
   assert.match(html, /fonts\.googleapis\.com[^"]*Spectral/);
@@ -236,14 +236,11 @@ test('logo subtitle reads as considered copy, not a tracked-out all-caps label w
   assert.match(navHtml, /viaja, descubre, vive/i);
 });
 
-test('the hero has an asymmetric split with a tepui-silhouette edge, not a flat rectangle', () => {
+test('the hero has an asymmetric split cut by a single clean diagonal, not a jagged stepped skyline', () => {
   const heroSection = html.match(/<section id="inicio"[\s\S]*?<\/section>/)[0];
-  assert.match(heroSection, /tepui-edge/, 'expected a clip-path element carrying the tepui-skyline shape');
-  assert.match(html_css, /\.tepui-edge\s*\{[^}]*clip-path/s);
-});
-
-test('a tepui-skyline divider separates the hero from the next section, echoing the clip-path motif', () => {
-  assert.match(html, /tepui-divider/);
+  assert.match(heroSection, /diagonal-edge/, 'expected a clip-path element carrying the diagonal cut');
+  assert.match(html_css, /\.diagonal-edge\s*\{[^}]*clip-path:\s*polygon\(\s*\d+%?\s+0/s, 'a 2-point diagonal polygon, not a multi-step jagged one');
+  assert.doesNotMatch(html, /tepui/i, 'the stepped tepui-silhouette motif was rejected and should be fully gone');
 });
 
 test('the mission-statement intro is visually distinguished from the headline, not a plain paragraph underneath it', () => {
@@ -270,11 +267,6 @@ test('nav links animate in one by one, not as a single static block', () => {
 test('the page alternates dark/light section backgrounds for rhythm, echoing the hero, instead of flat cream throughout', () => {
   const darkSections = (html.match(/<section[^>]*id="[^"]*"[^>]*bg-ink/g) || []).length;
   assert.ok(darkSections >= 2, `expected at least 2 non-hero sections on bg-ink, found ${darkSections}`);
-});
-
-test('tepui-skyline dividers mark every section-background transition, not just the one after the hero', () => {
-  const dividerCount = (html.match(/tepui-divider/g) || []).length;
-  assert.ok(dividerCount >= 3, `expected at least 3 tepui dividers across the page, found ${dividerCount}`);
 });
 
 test('service cards are differentiated by a distinct accent per card, not an identical stamped card-kit', () => {
