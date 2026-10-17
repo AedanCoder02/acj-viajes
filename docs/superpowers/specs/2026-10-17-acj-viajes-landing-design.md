@@ -22,6 +22,9 @@ open a WhatsApp conversation.
   problem/solution framing from the questionnaire.
 - Carry the differentiation message clearly: a single dedicated advisor and a
   trip designed only for that client, versus fixed packages/mass-market agencies.
+- Substitute for the social proof the agency doesn't have yet (no reviews, no
+  track record on the open web) with *process* credibility — see "audience
+  trust signals" below.
 - Speak credibly to both the core local/regional audience (35–65, discretionary
   spend, values exclusivity) and the European long-haul segment (10–21 day,
   multi-destination trips booked months ahead, wants communication in their
@@ -76,6 +79,14 @@ These were discussed and chosen with the project contact, not assumed:
 - **Page structure:** one long scrolling page, Promar's section-pacing as the
   structural (not visual) reference: nav → hero → services (3) → why-ACJ /
   differentiation → audience trust signals → WhatsApp CTA → footer.
+  **Agency call on the trust-signals section:** since there are no reviews, no
+  certifications, and no track record to cite yet, this section must not
+  fabricate stats or claims (no invented "+500 clientes" style numbers — that
+  would violate the anti-goal on implying capability that doesn't exist).
+  Instead it carries *process* credibility: how a trip actually gets built
+  (single advisor, before/during/after support, small/private groups), i.e.
+  the differentiation copy the client already wrote, not manufactured social
+  proof.
 - **Conversion path:** WhatsApp only. No contact form, no backend.
 - **Language:** ES/EN toggle, Spanish as default/primary (matches the SEO phrase
   verbatim), English as the secondary audience-facing version for the European
@@ -103,11 +114,83 @@ These were discussed and chosen with the project contact, not assumed:
   — domain is a placeholder until the client has one.
 - **WhatsApp CTA wiring:** implemented against a single placeholder number,
   structured so the real number drops in later with no other changes.
+- **Brand name treatment:** nothing in the questionnaire expands "ACJ" into
+  words, and there's no one to ask. Treated as a standalone brand name (common
+  in the travel-agency category), not spelled out or guessed at — agency call.
 
-## Source Material
+## Source Material (verbatim, canonical for copywriting)
 
-Full client questionnaire responses (mission, services, competitors,
-differentiation, audience, SEO phrase, brand adjectives, reference sites,
-explicit "no colloquial language" instruction) are preserved in the conversation
-that produced this design and should be treated as the canonical content source
-during copywriting.
+**Mission / 30-second pitch:**
+> "En ACJ Viajes, nuestra misión es convertir cada viaje en una experiencia
+> única. Escuchamos tus sueños, diseñamos cada detalle a tu medida y te
+> acompañamos en cada paso, con atención personalizada y exclusiva. Porque no
+> vendemos destinos: creamos recorridos pensados solo para ti."
+
+**Service 1 — Circuitos terrestres:**
+> "Con ACJ Viajes, tu circuito terrestre se diseña a tu medida. Elegimos
+> rutas, tiempos y paradas según tus gustos, con guías de confianza y
+> transporte seguro. Cuidamos cada detalle para que solo te dediques a
+> disfrutar. Sin itinerarios genéricos ni sorpresas: un asesor te acompaña
+> antes, durante y después del viaje. ACJ Viajes: viaja, descubre, vive."
+
+**Service 2 — Boletería nacional e internacional:**
+> "Con ACJ Viajes, volar es más fácil. Comparamos aerolíneas, horarios y
+> tarifas para encontrar la mejor opción según tu presupuesto y necesidades.
+> Te asesoramos en cambios, escalas y documentación, y estamos disponibles
+> ante cualquier imprevisto. Ya sea un vuelo nacional o internacional, tu
+> boleto llega con la tranquilidad de una atención personal y exclusiva. ACJ
+> Viajes: viaja, descubre, vive."
+
+**Service 3 — Hospedaje nacional e internacional:**
+> "Con ACJ Viajes, encuentras el lugar ideal para descansar. Seleccionamos
+> hoteles y alojamientos según tu estilo, presupuesto y ubicación deseada, en
+> cualquier destino, nacional o internacional. Negociamos tarifas
+> preferenciales, verificamos la calidad y gestionamos tu reserva sin
+> complicaciones. Te hospedas con la confianza de contar con un asesor
+> exclusivo que cuida cada detalle. ACJ Viajes: viaja, descubre, vive."
+
+**Differentiation vs. competitors (Hover Tours — circuitos; Viajes Índigo —
+boletería y hospedaje):**
+- Itinerario a medida: el cliente decide rutas, ritmo y paradas, no elige
+  entre salidas y paquetes fijos.
+- Asesor único: una sola persona lo acompaña antes, durante y después del
+  viaje.
+- Flexibilidad: fechas, grupos pequeños, preferencias especiales.
+- Experiencia exclusiva, no compartida con un grupo masivo.
+- Asesoría real, no solo venta: se compara y recomienda, no solo se emite.
+- Acompañamiento ante imprevistos (cambios, cancelaciones, retrasos).
+- Trato cercano: el cliente es reconocido por nombre e historial.
+
+**Key client-facing message:**
+> "Otras agencias venden servicios; en ACJ Viajes creamos tu experiencia. Un
+> asesor exclusivo, un plan a tu medida y respaldo en cada paso. ACJ Viajes:
+> viaja, descubre, vive."
+
+**Target audience:**
+- Core: 35–65 years old (sub-segments 35–55 parejas/familias con poder
+  adquisitivo; 55–70 viajeros con tiempo y presupuesto; 25–35 viajeros
+  jóvenes/aventureros).
+- Significant European segment: 10–21 day trips, booked months ahead, often
+  multi-destination, arrive wanting everything resolved from the airport —
+  circuito terrestre is the natural fit for them.
+- What they look for: autenticidad (cultura local, gastronomía, naturaleza,
+  lejos del turismo masivo), seguridad y confianza (transporte confiable,
+  guías certificados, respaldo ante imprevistos), comunicación clara
+  (respuesta rápida, itinerario detallado, precios transparentes, idioma
+  propio cuando es posible), personalización real (rutas flexibles, grupos
+  pequeños o privados), turismo responsable, buen valor (no necesariamente lo
+  más barato, sino la mejor relación calidad-precio).
+
+**SEO phrase (target):** "Agencia de viajes en Venezuela circuitos a medida"
+
+**Brand personality (client's own words):** Atenta (escucha antes de
+proponer, recuerda los detalles de cada cliente), Confiable (cumple lo
+prometido, presente ante imprevistos), Aventurera (conoce el destino a fondo,
+disfruta compartir lo auténtico de cada lugar).
+
+**Explicit instruction:** no lenguaje coloquial, anywhere.
+
+**Reference sites named by the client** (structural/quality benchmarks only —
+not visual sources): Sunsolhoteles.com, Lalianxaviajes.com, and their own
+existing Promar Instituto site (`D:\AP\projects\promar_web`), used here only
+for one-page section pacing, never its palette, type, or copy.
