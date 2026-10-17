@@ -80,7 +80,7 @@ test('every transition/animation in styles.css is covered by the reduced-motion 
 // --- Final-review fix pass ---
 
 test('hero and all three service images exist on disk with non-empty alt text', () => {
-  const images = ['assets/images/hero-roraima.jpg', 'assets/images/circuitos.jpg', 'assets/images/boleteria.jpg', 'assets/images/hospedaje.jpg', 'assets/images/ciudad.jpg'];
+  const images = ['assets/images/hero-roraima.jpg', 'assets/images/circuitos.jpg', 'assets/images/boleteria.jpg', 'assets/images/hospedaje.jpg', 'assets/images/ciudad.jpg', 'assets/images/playa.jpg', 'assets/images/noche.jpg'];
   for (const img of images) {
     assert.ok(existsSync(new URL(`../${img}`, import.meta.url)), `${img} should exist`);
     const re = new RegExp(`<img[^>]*src="${img}"[^>]*alt="[^"]+"`);
@@ -249,6 +249,13 @@ test('the hero image fades from a dark legible scrim into the clear photo, not a
   assert.match(html_css, /\.hero-scrim\s*\{[^}]*background:\s*linear-gradient/s);
 });
 
+test('the hero scrim clears to fully transparent well before the right edge, so most of the photo stays unobstructed', () => {
+  const desktopBlock = html_css.match(/@media \(min-width: 768px\) \{[\s\S]*?\.hero-scrim[\s\S]*?\n\}/)[0];
+  const stops = [...desktopBlock.matchAll(/rgba\(22, 35, 31, 0\)\s+(\d+)%/g)].map((m) => Number(m[1]));
+  assert.ok(stops.length > 0, 'expected a fully-transparent (alpha 0) gradient stop');
+  assert.ok(stops[0] <= 70, `fully-transparent stop should land at 70% or earlier, found ${stops[0]}%`);
+});
+
 test('the mission-statement intro is visually distinguished from the headline, not a plain paragraph underneath it', () => {
   const heroSection = html.match(/<section id="inicio"[\s\S]*?<\/section>/)[0];
   assert.match(heroSection, /class="[^"]*\bhero-intro\b[^"]*"/);
@@ -291,9 +298,25 @@ test('the three process steps are visually connected by a route line, echoing "c
   assert.match(procesoSection, /route-line/);
 });
 
-test('services opens with a destination photo banner (beach) that fades into the paper background, not flat white', () => {
+test('"Cómo trabajamos" is a full-bleed night photo with a glowing effect on each step, not a plain paper section', () => {
+  const procesoSection = html.match(/<section id="proceso"[\s\S]*?<\/section>/)[0];
+  assert.match(procesoSection, /<img[^>]*src="assets\/images\/noche\.jpg"/);
+  assert.match(procesoSection, /class="[^"]*\bnight-scrim\b[^"]*"/);
+  assert.match(html_css, /\.night-scrim\s*\{[^}]*background:\s*linear-gradient/s);
+  assert.match(procesoSection, /class="[^"]*\bstep-glow\b[^"]*"/);
+  assert.match(html_css, /\.step-glow[\s\S]*?animation:\s*\w+-pulse/);
+});
+
+test('route-line color stays visible against a dark night photo, not a dark-brown clay line that vanishes', () => {
+  assert.match(html_css, /border-top:\s*2px dashed #E3A23B/, 'route-line should use amber, visible against the night photo');
+  assert.doesNotMatch(html_css, /border-top:\s*2px dashed #9C5A2E/, 'clay was invisible against the dark background');
+});
+
+test('services opens with its own distinct white-sand beach banner, not a repeat of the hospedaje card photo', () => {
   const servicesSection = html.match(/<section id="servicios"[\s\S]*?<\/section>/)[0];
-  assert.match(servicesSection, /<img[^>]*src="assets\/images\/hospedaje\.jpg"/, 'reuses the Los Roques beach photo as an atmospheric opener');
+  const bannerSection = servicesSection.split('Nuestros servicios')[0];
+  assert.match(bannerSection, /<img[^>]*src="assets\/images\/playa\.jpg"/, 'banner should use the dedicated top-down beach photo');
+  assert.doesNotMatch(bannerSection, /hospedaje\.jpg/, 'banner must not repeat the card image behind it');
   assert.match(servicesSection, /class="[^"]*\bbanner-fade\b[^"]*"/);
   assert.match(html_css, /\.banner-fade\s*\{[^}]*background:\s*linear-gradient/s);
 });
@@ -308,4 +331,36 @@ test('diferencia is a full-bleed city photo with the same dark-to-clear gradient
 test('reduced-motion guard also covers the new nav-item stagger elements', () => {
   const reducedMotionBlock = html_css.match(/@media \(prefers-reduced-motion: reduce\) \{[\s\S]*?\n\}/)[0];
   assert.match(reducedMotionBlock, /\.nav-item-anim/);
+});
+
+// --- Proper footer: logo, nav, CTA, a real destinations marquee, all with motion ---
+
+test('footer is a full section, not just a tagline and copyright line', () => {
+  const footerHtml = html.match(/<footer[\s\S]*?<\/footer>/)[0];
+  assert.match(footerHtml, /logo-mark/, 'footer should repeat the brand mark');
+  assert.match(footerHtml, /href="#servicios"/, 'footer should repeat the nav links');
+  assert.match(footerHtml, /href="#diferencia"/);
+  assert.match(footerHtml, /href="#proceso"/);
+  assert.match(footerHtml, /whatsapp-cta/, 'footer should carry its own CTA');
+});
+
+test('footer destinations marquee scrolls real place names, not decorative all-caps metadata', () => {
+  const footerHtml = html.match(/<footer[\s\S]*?<\/footer>/)[0];
+  assert.match(footerHtml, /class="[^"]*\bmarquee\b[^"]*"/);
+  assert.match(footerHtml, /Los Roques/);
+  assert.match(footerHtml, /Roraima|Mérida|Canaima/);
+  assert.doesNotMatch(footerHtml, /·/, 'no middle-dot metadata separators — that tell was already rejected once');
+  assert.match(html_css, /@keyframes marquee-scroll/);
+  assert.match(html_css, /\.marquee-track\s*\{[^}]*animation:\s*marquee-scroll/s);
+});
+
+test('footer content has its own reveal entrance, consistent with the rest of the page', () => {
+  const footerHtml = html.match(/<footer[\s\S]*?<\/footer>/)[0];
+  assert.match(footerHtml, /class="[^"]*\breveal\b[^"]*"/);
+});
+
+test('reduced-motion guard covers the footer marquee and step-glow pulse', () => {
+  const reducedMotionBlock = html_css.match(/@media \(prefers-reduced-motion: reduce\) \{[\s\S]*?\n\}/)[0];
+  assert.match(reducedMotionBlock, /\.marquee-track/);
+  assert.match(reducedMotionBlock, /\.step-glow/);
 });

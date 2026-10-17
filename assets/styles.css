@@ -74,9 +74,12 @@ html[data-lang="en"] [lang="es"] { display: none; }
 .city-scrim {
   background: linear-gradient(180deg, #16231F 0%, #16231F 60%, rgba(22, 35, 31, 0.1) 100%);
 }
+.night-scrim {
+  background: linear-gradient(180deg, #16231F 0%, #16231F 60%, rgba(22, 35, 31, 0.1) 100%);
+}
 @media (min-width: 768px) {
-  .hero-scrim, .city-scrim {
-    background: linear-gradient(90deg, #16231F 0%, #16231F 42%, rgba(22, 35, 31, 0.15) 78%, rgba(22, 35, 31, 0) 100%);
+  .hero-scrim, .city-scrim, .night-scrim {
+    background: linear-gradient(90deg, #16231F 0%, #16231F 36%, rgba(22, 35, 31, 0.1) 52%, rgba(22, 35, 31, 0) 65%);
   }
 }
 
@@ -106,9 +109,34 @@ html[data-lang="en"] [lang="es"] { display: none; }
     left: 16.5%;
     right: 16.5%;
     height: 0;
-    border-top: 2px dashed #9C5A2E;
+    border-top: 2px dashed #E3A23B;
     z-index: 0;
   }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(227, 162, 59, 0.45); }
+  50% { box-shadow: 0 0 22px 7px rgba(227, 162, 59, 0.3); }
+}
+.step-glow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.25rem;
+  height: 3.25rem;
+  border-radius: 9999px;
+  background: rgba(22, 35, 31, 0.5);
+  animation: glow-pulse 2.6s ease-in-out infinite;
+}
+
+@keyframes marquee-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll 28s linear infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -118,4 +146,6 @@ html[data-lang="en"] [lang="es"] { display: none; }
     transform: none !important;
   }
   .logo-arc { stroke-dashoffset: 0 !important; }
+  .marquee-track { animation: none !important; transform: none !important; }
+  .step-glow { animation: none !important; box-shadow: none !important; }
 }
