@@ -339,14 +339,17 @@ test('services uses its own distinct white-sand beach photo as backdrop, not a r
   assert.match(html_css, /\.beach-wash\s*\{[^}]*background:\s*rgba/s);
 });
 
-test('the beach photo is the background of the whole services section, including the card grid, not a strip confined above it', () => {
+test('the beach photo sits directly on the services section (not a separate wrapper div) but is capped to a sane viewport height, not stretched across the whole tall mobile section', () => {
   const servicesSection = html.match(/<section id="servicios"[\s\S]*?<\/section>/)[0];
   assert.match(
     servicesSection,
-    /<section id="servicios"[^>]*>\s*<img[^>]*src="assets\/images\/playa\.jpg"[^>]*class="[^"]*\babsolute\b[^"]*\binset-0\b[^"]*\bw-full\b[^"]*\bh-full\b[^"]*"/,
-    'playa.jpg should be an absolute inset-0 background directly on the section, covering its full height — not confined to a separate shorter banner div'
+    /<section id="servicios"[^>]*>\s*<img[^>]*src="assets\/images\/playa\.jpg"[^>]*class="[^"]*\babsolute\b[^"]*\btop-0\b[^"]*"/,
+    'playa.jpg should be an absolute top-0 background directly on the section'
   );
-  assert.doesNotMatch(servicesSection, /<div class="relative h-\[/, 'should no longer have a separate fixed-height banner wrapper');
+  assert.doesNotMatch(servicesSection, /<div class="relative h-\[/, 'should no longer have a separate fixed-height banner wrapper div');
+  const imgTagMatch = servicesSection.match(/<img[^>]*src="assets\/images\/playa\.jpg"[^>]*>/)[0];
+  assert.doesNotMatch(imgTagMatch, /\bh-full\b/, 'h-full stretches the image across the whole (very tall on mobile) section, massively over-zooming it — height must be capped instead');
+  assert.match(imgTagMatch, /h-\[\d+vh\]/, 'expected a viewport-relative capped height');
 });
 
 test('each service card has its own legible panel so its text reads clearly against the photo behind it', () => {
