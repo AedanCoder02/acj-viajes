@@ -218,10 +218,10 @@ test('reduced-motion guard also covers the new nav/logo/stagger elements', () =>
 
 // --- Visual identity pass: typography, deliberate shape (frontend-design) ---
 
-test('the page uses an intentional Google Fonts pairing, not system-default Georgia/Helvetica', () => {
-  assert.match(html, /fonts\.googleapis\.com[^"]*Spectral/);
-  assert.match(html, /fonts\.googleapis\.com[^"]*Work\+Sans/);
-  assert.match(html, /serif:\s*\['Spectral'/, 'Spectral should be the primary serif, not just present as a fallback somewhere');
+test('the page uses the client-provided brand fonts, not system-default Georgia/Helvetica', () => {
+  assert.match(html, /fonts\.googleapis\.com[^"]*Cormorant\+Garamond/);
+  assert.match(html, /fonts\.googleapis\.com[^"]*Jost/);
+  assert.match(html, /serif:\s*\['Cormorant Garamond'/, 'Cormorant Garamond should be the primary serif, not just present as a fallback somewhere');
   assert.doesNotMatch(html, /serif:\s*\['Georgia'/, 'Georgia should not be the primary declared serif');
 });
 
@@ -251,9 +251,9 @@ test('the hero image fades from a dark legible scrim into the clear photo, not a
 
 test('the hero scrim clears to fully transparent well before the right edge, so most of the photo stays unobstructed', () => {
   const desktopBlock = html_css.match(/@media \(min-width: 768px\) \{[\s\S]*?\.hero-scrim[\s\S]*?\n\}/)[0];
-  const stops = [...desktopBlock.matchAll(/rgba\(22, 35, 31, 0\)\s+(\d+)%/g)].map((m) => Number(m[1]));
+  const stops = [...desktopBlock.matchAll(/rgba\(7, 91, 115, 0\)\s+(\d+)%/g)].map((m) => Number(m[1]));
   assert.ok(stops.length > 0, 'expected a fully-transparent (alpha 0) gradient stop');
-  assert.ok(stops[0] <= 70, `fully-transparent stop should land at 70% or earlier, found ${stops[0]}%`);
+  assert.ok(stops[0] <= 75, `fully-transparent stop should land at 75% or earlier, found ${stops[0]}%`);
 });
 
 test('the mission-statement intro is visually distinguished from the headline, not a plain paragraph underneath it', () => {
@@ -308,8 +308,8 @@ test('"Cómo trabajamos" is a full-bleed night photo with a glowing effect on ea
 });
 
 test('route-line color stays visible against a dark night photo, not a dark-brown clay line that vanishes', () => {
-  assert.match(html_css, /border-top:\s*2px dashed #E3A23B/, 'route-line should use amber, visible against the night photo');
-  assert.doesNotMatch(html_css, /border-top:\s*2px dashed #9C5A2E/, 'clay was invisible against the dark background');
+  assert.match(html_css, /border-top:\s*2px dashed #C9A45C/, 'route-line should use amber, visible against the night photo');
+  assert.doesNotMatch(html_css, /border-top:\s*2px dashed #D9B77A/, 'clay was invisible against the dark background');
 });
 
 test('route-line passes through the exact vertical center of the step-glow circles, not above or below them', () => {
@@ -409,9 +409,9 @@ test('reduced-motion guard covers the footer marquee and step-glow pulse', () =>
 
 test('scrollbar is styled in the brand palette for both Chromium/Safari and Firefox', () => {
   assert.match(html_css, /::-webkit-scrollbar\s*\{/);
-  assert.match(html_css, /::-webkit-scrollbar-thumb\s*\{[^}]*#E3A23B/s, 'thumb should use the amber accent');
+  assert.match(html_css, /::-webkit-scrollbar-thumb\s*\{[^}]*#C9A45C/s, 'thumb should use the amber accent');
   assert.match(html_css, /::-webkit-scrollbar-track\s*\{/);
-  assert.match(html_css, /scrollbar-color:\s*#E3A23B/, 'Firefox fallback via scrollbar-color');
+  assert.match(html_css, /scrollbar-color:\s*#C9A45C/, 'Firefox fallback via scrollbar-color');
 });
 
 // --- Closing CTA gets its own destination photo; destinations ticker goes international ---
@@ -491,4 +491,24 @@ test('cookie notice JS remembers dismissal via localStorage and does not re-show
   const scriptJs = readFileSync(new URL('../assets/script.js', import.meta.url), 'utf8');
   assert.match(scriptJs, /cookie-notice/);
   assert.match(scriptJs, /localStorage/);
+});
+
+// --- Kill the flat "black filter" plateau in every scrim; mobile must reveal real photo, not mostly solid color ---
+
+for (const scrimClass of ['hero-scrim', 'city-scrim', 'night-scrim', 'shrine-scrim']) {
+  test(`.${scrimClass} is a continuous fade with no flat full-opacity wall (mobile default)`, () => {
+    const ruleMatch = html_css.match(new RegExp(`\\.${scrimClass}\\s*\\{[^}]*\\}`, 's'));
+    assert.ok(ruleMatch, `expected a base (mobile) rule for .${scrimClass}`);
+    const rule = ruleMatch[0];
+    const solidStopCount = (rule.match(/#075B73/g) || []).length;
+    assert.ok(solidStopCount <= 1, `${scrimClass}: expected at most one fully-solid #075B73 stop (no flat plateau), found ${solidStopCount}`);
+  });
+}
+
+test('desktop scrim gradient also has no flat wall and clears to transparent well before the far edge', () => {
+  const desktopBlock = html_css.match(/@media \(min-width: 768px\) \{[\s\S]*?hero-scrim[\s\S]*?\n  \}/)[0];
+  const solidStopCount = (desktopBlock.match(/#075B73/g) || []).length;
+  assert.ok(solidStopCount <= 1, `expected at most one fully-solid #075B73 stop in the desktop scrim, found ${solidStopCount}`);
+  const transparentStops = [...desktopBlock.matchAll(/rgba\(7, 91, 115, 0\)\s+(\d+)%/g)].map((m) => Number(m[1]));
+  assert.ok(transparentStops.length > 0 && Math.min(...transparentStops) <= 75, 'should reach fully transparent by 75% at the latest');
 });
