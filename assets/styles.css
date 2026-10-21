@@ -50,9 +50,13 @@ html {
 .nav-item-anim.d3 { animation-delay: 0.55s; }
 
 .logo-arc {
-  stroke-dasharray: 60;
-  stroke-dashoffset: 60;
+  stroke-dasharray: 56;
+  stroke-dashoffset: 56;
   animation: draw-arc 0.8s ease forwards 0.2s;
+}
+.logo-wave {
+  opacity: 0;
+  animation: fade-up 0.5s ease forwards 0.7s;
 }
 .logo-pin {
   opacity: 0;
@@ -168,7 +172,7 @@ html {
 
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; transition: none !important; }
-  .hero-anim, .nav-anim, .nav-item-anim, .reveal, .reveal-item, .logo-pin, .logo-text {
+  .hero-anim, .nav-anim, .nav-item-anim, .reveal, .reveal-item, .logo-pin, .logo-text, .logo-wave {
     opacity: 1 !important;
     transform: none !important;
   }
