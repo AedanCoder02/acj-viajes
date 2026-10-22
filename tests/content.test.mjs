@@ -229,11 +229,15 @@ test('old cream/terracotta tokens are fully retired, not left mixed in with the 
   assert.doesNotMatch(html, /\bbg-sand\b|\btext-terracotta\b|\bbg-terracotta\b|\bhover:text-terracotta\b/);
 });
 
-test('logo subtitle reads as considered copy, not a tracked-out all-caps label with middle dots', () => {
+test('logo has no tracked-out all-caps tagline with middle dots baked into the mark', () => {
   const navHtml = html.match(/<nav[\s\S]*?<\/nav>/)[0];
   assert.doesNotMatch(navHtml, /·/, 'middle-dot-separated metadata is a generic template tell');
-  assert.doesNotMatch(navHtml, /VIAJA/, 'tracked-out all-caps tagline should be replaced with sentence case');
-  assert.match(navHtml, /viaja, descubre, vive/i);
+});
+
+test('the brand slogan appears as its own impactful, standalone headline at the closing CTA', () => {
+  const ctaSection = html.match(/<section id="contacto"[\s\S]*?<\/section>/)[0];
+  assert.match(ctaSection, /Viaja\. Descubre\. Vive\./);
+  assert.match(ctaSection, /Travel\. Discover\. Live\./);
 });
 
 test('the hero image is full-bleed across the whole section, not confined to a split panel', () => {
