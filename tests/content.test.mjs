@@ -272,7 +272,7 @@ test('the hero image is full-bleed across the whole section, not confined to a s
   assert.match(heroSection, /<img[^>]*src="assets\/images\/hero-roraima\.jpg"[^>]*class="[^"]*\bw-full\b[^"]*"/, 'image should span the full width of the section');
 });
 
-test('every full-bleed section photo covers its whole section, with no solid-color seam where a capped photo would otherwise end partway down', () => {
+test('every full-bleed section photo is capped to a viewport-relative height (bounded upscale, no pixelation), with the scrim re-darkening at the bottom so it blends into the section color instead of cutting', () => {
   const images = [
     ['inicio', 'hero-roraima.jpg', 'hero-scrim'],
     ['diferencia', 'ciudad.jpg', 'city-scrim'],
@@ -282,10 +282,13 @@ test('every full-bleed section photo covers its whole section, with no solid-col
   for (const [sectionId, file, scrimClass] of images) {
     const section = html.match(new RegExp(`<section id="${sectionId}"[\\s\\S]*?<\\/section>`))[0];
     const imgTag = section.match(new RegExp(`<img[^>]*src="assets\\/images\\/${file.replace('.', '\\.')}"[^>]*>`))[0];
-    assert.doesNotMatch(imgTag, /h-\[\d+vh\]/, `${file}: a capped viewport-height leaves a hard seam into the section's solid background on tall mobile layouts`);
-    assert.match(imgTag, /\bh-full\b/, `${file}: the photo should span the full section height so it never visibly cuts off`);
+    assert.doesNotMatch(imgTag, /\bh-full\b/, `${file}: h-full lets content-driven mobile sections grow unbounded, forcing object-cover to upscale the photo well past its native resolution and look pixelated`);
+    assert.match(imgTag, /h-\[\d+vh\]/, `${file}: expected a viewport-relative capped height so the required upscale stays bounded`);
     const scrimTag = section.match(new RegExp(`<div class="${scrimClass}[^"]*"[^>]*>`))[0];
-    assert.doesNotMatch(scrimTag, /h-\[\d+vh\]/, `${scrimClass}: scrim must also cover the full section, matching the (now uncapped) photo`);
+    assert.match(scrimTag, /h-\[\d+vh\]/, `${scrimClass}: scrim must be capped to match the (now bounded) photo height`);
+    const scrimRule = html_css.match(new RegExp(`\\.${scrimClass}\\s*\\{[^}]*\\}`, 's'))[0];
+    const lastStop = [...scrimRule.matchAll(/rgba\(7, 91, 115, ([\d.]+)\)\s+100%/g)].map((m) => Number(m[1]));
+    assert.ok(lastStop.length > 0 && lastStop[0] >= 0.8, `${scrimClass}: the gradient's final (100%) stop should be nearly opaque so it blends into the section's solid background at the cap, instead of fading to clear right before a hard cutoff`);
   }
 });
 
