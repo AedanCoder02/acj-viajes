@@ -1,7 +1,0 @@
-<svg viewBox="0 0 175 120" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ACJ Travel">
-  <path d="M6 58 Q32 40 58 58 T110 58" fill="none" stroke="#16B8C4" stroke-width="6.5" stroke-linecap="round"/>
-  <path d="M160 14 L124 29 L138 34 L142 48 Z" fill="#C9A45C"/>
-  <path d="M94 48 Q112 38 128 30" fill="none" stroke="#C9A45C" stroke-width="2" stroke-dasharray="3 4" stroke-linecap="round"/>
-  <text x="2" y="80" font-family="Cormorant Garamond, Georgia, serif" font-weight="700" font-size="62" letter-spacing="0.5"><tspan fill="#075B73">A</tspan><tspan fill="#075B73">C</tspan><tspan fill="#C9A45C">J</tspan></text>
-  <text x="6" y="107" font-family="Jost, Helvetica, Arial, sans-serif" font-weight="600" font-size="17" letter-spacing="5.5" fill="#C9A45C">TRAVEL</text>
-</svg>

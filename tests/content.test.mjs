@@ -190,15 +190,13 @@ test('nav has its own entrance animation, distinct from the hero', () => {
   assert.match(html_css, /\.nav-anim\s*\{/);
 });
 
-test('the logo is inlined as SVG (not <img>) in the nav, so its paths can be individually animated', () => {
+test('the nav uses the real brand logo artwork (not a hand-drawn recreation), with an entrance animation', () => {
   const navHtml = html.match(/<nav[\s\S]*?<\/nav>/)[0];
-  assert.doesNotMatch(navHtml, /<img[^>]*logo\.svg/, 'nav should no longer reference the logo via <img>');
-  assert.match(navHtml, /<svg[^>]*class="[^"]*\blogo-mark\b[^"]*"/);
-  assert.match(navHtml, /class="[^"]*\blogo-arc\b[^"]*"/, 'the arc path should be individually targetable for a draw-in animation');
+  assert.match(navHtml, /<img[^>]*src="assets\/images\/acj-logo\.png"[^>]*class="[^"]*\blogo-img\b[^"]*"/, 'nav should use the real logo image with the pop-in entrance class');
 });
 
-test('logo draw-in animation exists in CSS and is a real stroke animation, not just a fade', () => {
-  assert.match(html_css, /\.logo-arc\s*\{[^}]*stroke-dash(array|offset)/s);
+test('logo entrance animation exists in CSS as a real pop-in, not just a fade', () => {
+  assert.match(html_css, /\.logo-img\s*\{[^}]*animation:\s*pop-in/s);
 });
 
 test('every reveal section stages its children one-by-one rather than animating as a single block', () => {
@@ -212,7 +210,7 @@ test('every reveal section stages its children one-by-one rather than animating 
 test('reduced-motion guard also covers the new nav/logo/stagger elements', () => {
   const reducedMotionBlock = html_css.match(/@media \(prefers-reduced-motion: reduce\) \{[\s\S]*?\n\}/)[0];
   assert.match(reducedMotionBlock, /\.nav-anim/);
-  assert.match(reducedMotionBlock, /\.logo-arc/);
+  assert.match(reducedMotionBlock, /\.logo-img/);
   assert.match(reducedMotionBlock, /\.reveal-item/);
 });
 
