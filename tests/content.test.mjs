@@ -1,9 +1,29 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync, existsSync } from 'node:fs';
+import { readFileSync, existsSync, statSync } from 'node:fs';
 
 const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const html_css = readFileSync(new URL('../assets/styles.css', import.meta.url), 'utf8');
+
+test('photo sections ship a mobile-sized srcset and a lazy/eager loading hint, not one multi-MB file for every device', () => {
+  const photoImgs = [...html.matchAll(/<img[^>]*src="assets\/images\/(hero-roraima|playa|ciudad|noche|japon|circuitos|boleteria|hospedaje)\.jpg"[^>]*>/g)].map((m) => m[0]);
+  assert.ok(photoImgs.length >= 8, `expected at least 8 photo <img> tags on the homepage, found ${photoImgs.length}`);
+  for (const tag of photoImgs) {
+    assert.match(tag, /srcset="[^"]*@900w\.jpg 900w,[^"]*\.jpg 1920w"/, `missing a mobile (900w) srcset variant: ${tag}`);
+    assert.match(tag, /loading="(lazy|eager)"/, `missing an explicit loading hint: ${tag}`);
+  }
+  // the first hero photo must be eager (above the fold) and the rest lazy (below it)
+  assert.match(photoImgs[0], /loading="eager"/, 'the hero photo should load eagerly, not lazily, since it is the first thing visible');
+});
+
+test('the full-size photo files actually got compressed down from their multi-MB originals', () => {
+  for (const name of ['hero-roraima', 'playa', 'ciudad', 'noche', 'japon', 'circuitos', 'boleteria', 'hospedaje']) {
+    const size = statSync(new URL(`../assets/images/${name}.jpg`, import.meta.url)).size;
+    assert.ok(size < 800 * 1024, `${name}.jpg is ${(size / 1024).toFixed(0)}KB — expected it compressed under 800KB`);
+    const mobileSize = statSync(new URL(`../assets/images/${name}@900w.jpg`, import.meta.url)).size;
+    assert.ok(mobileSize < 250 * 1024, `${name}@900w.jpg is ${(mobileSize / 1024).toFixed(0)}KB — the mobile variant should be well under 250KB`);
+  }
+});
 
 test('root element defaults to Spanish with no JS required', () => {
   assert.match(html, /<html[^>]*\blang="es"[^>]*\bdata-lang="es"/);
@@ -202,9 +222,16 @@ test('logo entrance animation exists in CSS as a real pop-in, not just a fade', 
 test('every reveal section stages its children one-by-one rather than animating as a single block', () => {
   const itemCount = (html.match(/class="[^"]*\breveal-item\b[^"]*"/g) || []).length;
   assert.ok(itemCount >= 8, `expected at least 8 .reveal-item elements across services/diferencia/proceso, found ${itemCount}`);
-  const staggerRule = html_css.match(/\.reveal\.in \.reveal-item[\s\S]*?\n\}/g) || [];
-  const delaySteps = new Set((html_css.match(/\.reveal-item:nth-child\(\d+\)\s*\{\s*transition-delay:\s*[^;]+;/g) || []).map((r) => r.match(/transition-delay:\s*([^;]+);/)[1]));
+  const delaySteps = new Set((html_css.match(/\.reveal-item:nth-child\(\d+\)\.in\s*\{\s*transition-delay:\s*[^;]+;/g) || []).map((r) => r.match(/transition-delay:\s*([^;]+);/)[1]));
   assert.ok(delaySteps.size >= 3, `expected at least 3 distinct nth-child transition-delay steps, found ${delaySteps.size}`);
+});
+
+test('reveal-items trigger on their own scroll position, not all at once when the parent section (much taller on mobile) first enters view', () => {
+  assert.doesNotMatch(html_css, /\.reveal\.in \.reveal-item\b/, 'reveal-item visibility must not be gated behind the parent .reveal wrapper crossing threshold — on a tall mobile section every item would fire together, long before the user scrolls to the later ones');
+  assert.match(html_css, /\.reveal-item\s*\{[^}]*opacity:\s*0/s, 'reveal-item needs its own independent opacity state to animate individually');
+  assert.match(html_css, /\.reveal-item\.in\s*\{[^}]*opacity:\s*1/s);
+  const script = readFileSync(new URL('../assets/script.js', import.meta.url), 'utf8');
+  assert.match(script, /querySelectorAll\(['"]\.reveal,\s*\.reveal-item['"]\)/, 'the IntersectionObserver must observe each .reveal-item individually, not just the section wrapper');
 });
 
 test('reduced-motion guard also covers the new nav/logo/stagger elements', () => {

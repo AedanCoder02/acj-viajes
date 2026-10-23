@@ -65,9 +65,9 @@ if (typeof document !== 'undefined') {
         },
         { threshold: 0.15 }
       );
-      document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+      document.querySelectorAll('.reveal, .reveal-item').forEach((el) => observer.observe(el));
     } else {
-      document.querySelectorAll('.reveal').forEach((el) => el.classList.add('in'));
+      document.querySelectorAll('.reveal, .reveal-item').forEach((el) => el.classList.add('in'));
     }
 
     const cookieNotice = document.getElementById('cookie-notice');
