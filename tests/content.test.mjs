@@ -272,18 +272,20 @@ test('the hero image is full-bleed across the whole section, not confined to a s
   assert.match(heroSection, /<img[^>]*src="assets\/images\/hero-roraima\.jpg"[^>]*class="[^"]*\bw-full\b[^"]*"/, 'image should span the full width of the section');
 });
 
-test('every full-bleed section photo is capped to a viewport-relative height, not stretched by h-full across a content-driven (and much taller on mobile) section', () => {
+test('every full-bleed section photo covers its whole section, with no solid-color seam where a capped photo would otherwise end partway down', () => {
   const images = [
-    ['inicio', 'hero-roraima.jpg'],
-    ['diferencia', 'ciudad.jpg'],
-    ['proceso', 'noche.jpg'],
-    ['contacto', 'japon.jpg'],
+    ['inicio', 'hero-roraima.jpg', 'hero-scrim'],
+    ['diferencia', 'ciudad.jpg', 'city-scrim'],
+    ['proceso', 'noche.jpg', 'night-scrim'],
+    ['contacto', 'japon.jpg', 'shrine-scrim'],
   ];
-  for (const [sectionId, file] of images) {
+  for (const [sectionId, file, scrimClass] of images) {
     const section = html.match(new RegExp(`<section id="${sectionId}"[\\s\\S]*?<\\/section>`))[0];
     const imgTag = section.match(new RegExp(`<img[^>]*src="assets\\/images\\/${file.replace('.', '\\.')}"[^>]*>`))[0];
-    assert.doesNotMatch(imgTag, /\bh-full\b/, `${file}: h-full stretches across the whole (much taller on mobile) section, cropping a different, over-zoomed slice than on desktop`);
-    assert.match(imgTag, /h-\[\d+vh\]/, `${file}: expected a viewport-relative capped height so mobile and desktop show the same crop`);
+    assert.doesNotMatch(imgTag, /h-\[\d+vh\]/, `${file}: a capped viewport-height leaves a hard seam into the section's solid background on tall mobile layouts`);
+    assert.match(imgTag, /\bh-full\b/, `${file}: the photo should span the full section height so it never visibly cuts off`);
+    const scrimTag = section.match(new RegExp(`<div class="${scrimClass}[^"]*"[^>]*>`))[0];
+    assert.doesNotMatch(scrimTag, /h-\[\d+vh\]/, `${scrimClass}: scrim must also cover the full section, matching the (now uncapped) photo`);
   }
 });
 
