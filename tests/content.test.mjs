@@ -244,7 +244,22 @@ test('the hero image is full-bleed across the whole section, not confined to a s
   const heroSection = html.match(/<section id="inicio"[\s\S]*?<\/section>/)[0];
   assert.doesNotMatch(heroSection, /md:grid-cols/, 'hero should no longer be a hard two-panel split');
   assert.doesNotMatch(heroSection, /diagonal-edge|tepui/i, 'hard-edged shape treatments were rejected in favor of a gradient scrim');
-  assert.match(heroSection, /<img[^>]*src="assets\/images\/hero-roraima\.jpg"[^>]*class="[^"]*\bw-full\b[^"]*\bh-full\b[^"]*"/, 'image should cover the full width and height of the section');
+  assert.match(heroSection, /<img[^>]*src="assets\/images\/hero-roraima\.jpg"[^>]*class="[^"]*\bw-full\b[^"]*"/, 'image should span the full width of the section');
+});
+
+test('every full-bleed section photo is capped to a viewport-relative height, not stretched by h-full across a content-driven (and much taller on mobile) section', () => {
+  const images = [
+    ['inicio', 'hero-roraima.jpg'],
+    ['diferencia', 'ciudad.jpg'],
+    ['proceso', 'noche.jpg'],
+    ['contacto', 'japon.jpg'],
+  ];
+  for (const [sectionId, file] of images) {
+    const section = html.match(new RegExp(`<section id="${sectionId}"[\\s\\S]*?<\\/section>`))[0];
+    const imgTag = section.match(new RegExp(`<img[^>]*src="assets\\/images\\/${file.replace('.', '\\.')}"[^>]*>`))[0];
+    assert.doesNotMatch(imgTag, /\bh-full\b/, `${file}: h-full stretches across the whole (much taller on mobile) section, cropping a different, over-zoomed slice than on desktop`);
+    assert.match(imgTag, /h-\[\d+vh\]/, `${file}: expected a viewport-relative capped height so mobile and desktop show the same crop`);
+  }
 });
 
 test('the hero image fades from a dark legible scrim into the clear photo, not a flat translucent block', () => {

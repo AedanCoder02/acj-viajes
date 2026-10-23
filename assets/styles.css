@@ -99,6 +99,9 @@ html {
 .shrine-scrim {
   background: linear-gradient(180deg, rgba(7, 91, 115, 0.8) 0%, rgba(7, 91, 115, 0.45) 40%, rgba(7, 91, 115, 0.05) 75%, rgba(7, 91, 115, 0) 100%);
 }
+.leaf-scrim {
+  background: linear-gradient(180deg, rgba(7, 91, 115, 0.3) 0%, rgba(7, 91, 115, 0.55) 60%, rgba(7, 91, 115, 0.88) 100%);
+}
 @media (min-width: 768px) {
   .hero-scrim, .city-scrim, .night-scrim, .shrine-scrim {
     background: linear-gradient(90deg, rgba(7, 91, 115, 0.8) 0%, rgba(7, 91, 115, 0.4) 35%, rgba(7, 91, 115, 0.05) 60%, rgba(7, 91, 115, 0) 75%);
