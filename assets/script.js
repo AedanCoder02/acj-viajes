@@ -1,6 +1,5 @@
 export const CONFIG = {
-  // PLACEHOLDER — replace with the real ACJ Viajes WhatsApp number before launch.
-  whatsappNumber: '000000000',
+  whatsappNumber: '584221820114',
   defaultLang: 'es',
 };
 
