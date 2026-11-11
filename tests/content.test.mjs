@@ -114,7 +114,7 @@ test('every WhatsApp CTA has a real wa.me href in the raw markup, not a bare "#"
   for (const tag of tags) {
     const hrefMatch = tag.match(/href="([^"]+)"/);
     assert.ok(hrefMatch, `whatsapp-cta tag missing href: ${tag}`);
-    assert.match(hrefMatch[1], /^https:\/\/wa\.me\/0+\?text=/);
+    assert.match(hrefMatch[1], /^https:\/\/wa\.me\/584221820114\?text=/);
   }
 });
 
