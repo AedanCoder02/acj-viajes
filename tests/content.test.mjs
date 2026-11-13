@@ -108,19 +108,27 @@ test('hero and all three service images exist on disk with non-empty alt text', 
   }
 });
 
-test('every WhatsApp CTA has a real wa.me href in the raw markup, not a bare "#"', () => {
-  const tags = [...html.matchAll(/<a\s[^>]*>/g)].map((m) => m[0]).filter((tag) => /class="[^"]*\bwhatsapp-cta\b[^"]*"/.test(tag));
-  assert.ok(tags.length >= 3, 'expected at least 3 whatsapp-cta links');
+test('every WhatsApp CTA trigger opens the shared dialog, not a bare link', () => {
+  const tags = [...html.matchAll(/<button\s[^>]*>/g)].map((m) => m[0]).filter((tag) => /class="[^"]*\bwhatsapp-cta\b[^"]*"/.test(tag));
+  assert.ok(tags.length >= 5, `expected at least 5 whatsapp-cta trigger buttons, found ${tags.length}`);
   for (const tag of tags) {
-    const hrefMatch = tag.match(/href="([^"]+)"/);
-    assert.ok(hrefMatch, `whatsapp-cta tag missing href: ${tag}`);
-    assert.match(hrefMatch[1], /^https:\/\/wa\.me\/584221820114\?text=/);
+    assert.match(tag, /aria-haspopup="dialog"/, `whatsapp-cta trigger missing aria-haspopup: ${tag}`);
+    assert.match(tag, /aria-controls="whatsapp-dialog"/, `whatsapp-cta trigger missing aria-controls: ${tag}`);
   }
 });
 
+test('the WhatsApp dialog offers real wa.me links for both reservations and contact', () => {
+  const dialogHtml = html.match(/<dialog id="whatsapp-dialog"[\s\S]*?<\/dialog>/)[0];
+  const optionTags = [...dialogHtml.matchAll(/<a\s[^>]*data-whatsapp-option="(reservations|contact)"[^>]*>/g)];
+  assert.equal(optionTags.length, 2, 'expected exactly two dialog options: reservations and contact');
+  const byKey = Object.fromEntries(optionTags.map((m) => [m[1], m[0]]));
+  assert.match(byKey.reservations.match(/href="([^"]+)"/)[1], /^https:\/\/wa\.me\/584147927455\?text=/);
+  assert.match(byKey.contact.match(/href="([^"]+)"/)[1], /^https:\/\/wa\.me\/584221820114\?text=/);
+});
+
 test('every CTA pairs its background with a text color that actually contrasts (no light-on-light or light-on-mid)', () => {
-  const ctaClassAttrs = [...html.matchAll(/<a[^>]*class="([^"]*whatsapp-cta[^"]*)"/g)].map((m) => m[1]);
-  assert.ok(ctaClassAttrs.length >= 3, 'expected at least 3 whatsapp-cta elements');
+  const ctaClassAttrs = [...html.matchAll(/<(?:a|button)[^>]*class="([^"]*whatsapp-cta[^"]*)"/g)].map((m) => m[1]);
+  assert.ok(ctaClassAttrs.length >= 5, 'expected at least 5 whatsapp-cta elements');
   for (const classAttr of ctaClassAttrs) {
     const isDarkBg = /bg-forest\b/.test(classAttr);
     const isAmberBg = /bg-amber\b/.test(classAttr);
@@ -186,9 +194,9 @@ test('headlines avoid the single-accent-word tell — no word gets its own color
 });
 
 test('a floating WhatsApp FAB is reachable from anywhere on the page', () => {
-  const fabTag = html.match(/<a[^>]*class="[^"]*\bfab-whatsapp\b[^"]*"[^>]*>/);
+  const fabTag = html.match(/<(?:a|button)[^>]*class="[^"]*\bfab-whatsapp\b[^"]*"[^>]*>/);
   assert.ok(fabTag, 'expected a .fab-whatsapp element');
-  assert.match(fabTag[0], /whatsapp-cta/, 'the FAB should also carry whatsapp-cta so JS wiring and the raw-href test both cover it');
+  assert.match(fabTag[0], /whatsapp-cta/, 'the FAB should also carry whatsapp-cta so JS wiring and the dialog-trigger test both cover it');
 });
 
 test('nav gains a stronger shadow once scrolled, via a JS-toggled class', () => {

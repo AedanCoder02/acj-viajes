@@ -2,8 +2,9 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { CONFIG, buildWhatsAppUrl, toggleLanguage, currentYear, isScrolled } from '../assets/script.js';
 
-test('CONFIG.whatsappNumber is the real ACJ Viajes number in international digits-only form', () => {
-  assert.equal(CONFIG.whatsappNumber, '584221820114');
+test('CONFIG.whatsappNumbers holds both real ACJ Viajes numbers in international digits-only form', () => {
+  assert.equal(CONFIG.whatsappNumbers.reservations, '584147927455');
+  assert.equal(CONFIG.whatsappNumbers.contact, '584221820114');
 });
 
 test('buildWhatsAppUrl builds a wa.me link with the message encoded', () => {
