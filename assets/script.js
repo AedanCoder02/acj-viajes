@@ -1,5 +1,8 @@
 export const CONFIG = {
-  whatsappNumber: '584221820114',
+  whatsappNumbers: {
+    reservations: '584147927455',
+    contact: '584221820114',
+  },
   defaultLang: 'es',
 };
 
@@ -35,10 +38,47 @@ if (typeof document !== 'undefined') {
       toggleBtn.addEventListener('click', () => toggleLanguage());
     }
 
-    const ctaMessage = 'Hola, quiero información sobre los servicios de ACJ Viajes';
-    document.querySelectorAll('.whatsapp-cta').forEach((el) => {
-      el.href = buildWhatsAppUrl(CONFIG.whatsappNumber, ctaMessage);
-    });
+    const whatsappMessages = {
+      reservations: 'Hola, quiero hacer una reserva con ACJ Viajes',
+      contact: 'Hola, quiero información sobre los servicios de ACJ Viajes',
+    };
+
+    const whatsappDialog = document.getElementById('whatsapp-dialog');
+    if (whatsappDialog) {
+      whatsappDialog.querySelectorAll('[data-whatsapp-option]').forEach((el) => {
+        const key = el.getAttribute('data-whatsapp-option');
+        el.href = buildWhatsAppUrl(CONFIG.whatsappNumbers[key], whatsappMessages[key]);
+      });
+
+      let whatsappTrigger = null;
+      document.querySelectorAll('.whatsapp-cta').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          whatsappTrigger = btn;
+          whatsappDialog.showModal();
+        });
+      });
+
+      whatsappDialog.addEventListener('click', (event) => {
+        const rect = whatsappDialog.getBoundingClientRect();
+        const insideDialog =
+          event.clientX >= rect.left && event.clientX <= rect.right &&
+          event.clientY >= rect.top && event.clientY <= rect.bottom;
+        if (!insideDialog) {
+          whatsappDialog.close();
+        }
+      });
+
+      const whatsappCloseBtn = document.getElementById('whatsapp-dialog-close');
+      if (whatsappCloseBtn) {
+        whatsappCloseBtn.addEventListener('click', () => whatsappDialog.close());
+      }
+
+      whatsappDialog.addEventListener('close', () => {
+        if (whatsappTrigger) {
+          whatsappTrigger.focus();
+        }
+      });
+    }
 
     const yearEl = document.getElementById('footer-year');
     if (yearEl) {
