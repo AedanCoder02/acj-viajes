@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ACJ Viajes — Agencia de Viajes en Venezuela | Circuitos a Medida</title>
   <meta name="description" content="ACJ Viajes: agencia de viajes en Venezuela especializada en circuitos a medida, boletería y hospedaje nacional e internacional, con un asesor exclusivo en cada paso." />
-  <!-- PLACEHOLDER domain (.example is IANA-reserved, never resolves) — replace with the real domain before launch, alongside CONFIG.whatsappNumber in assets/script.js -->
+  <!-- PLACEHOLDER domain (.example is IANA-reserved, never resolves) — replace with the real domain before launch, alongside CONFIG.whatsappNumbers in assets/script.js -->
   <link rel="canonical" href="https://acjviajes.example/" />
   <link rel="icon" type="image/png" href="assets/images/acj-logo.png" />
 
@@ -17,6 +17,43 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Pre-paint language detection: sets html[lang]/[data-lang] before first paint
+       so the module script's dictionary swap starts from the right language instead
+       of always from the Spanish fallback markup. Mirrors the detection rules in
+       assets/script.js (kept in sync manually since this must run synchronously,
+       before the module script loads). -->
+  <script>
+    (function () {
+      try {
+        var supported = ['en', 'es', 'pt-BR', 'pt-PT', 'fr', 'it', 'de', 'ja', 'zh'];
+        var stored = localStorage.getItem('acj-lang');
+        var lang = stored && supported.indexOf(stored) !== -1 ? stored : null;
+        var browserLangs = navigator.languages || [navigator.language];
+        if (!lang) {
+          for (var i = 0; i < browserLangs.length; i++) {
+            var tag = (browserLangs[i] || '').toLowerCase();
+            if (!tag) continue;
+            var exact = null;
+            for (var j = 0; j < supported.length; j++) {
+              if (supported[j].toLowerCase() === tag) { exact = supported[j]; break; }
+            }
+            if (exact) { lang = exact; break; }
+            var family = tag.split('-')[0];
+            if (family === 'pt') { lang = (tag === 'pt-br') ? 'pt-BR' : 'pt-PT'; break; }
+            for (var m = 0; m < supported.length; m++) {
+              if (supported[m].toLowerCase().split('-')[0] === family) { lang = supported[m]; break; }
+            }
+            if (lang) break;
+          }
+        }
+        if (lang) {
+          document.documentElement.setAttribute('data-lang', lang);
+          document.documentElement.setAttribute('lang', lang);
+        }
+      } catch (e) {}
+    })();
+  </script>
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -49,21 +86,19 @@
       </a>
       <div class="hidden md:flex items-center gap-6 text-sm font-medium">
         <a href="#servicios" class="nav-item-anim hover:text-amber focus-visible:outline focus-visible:outline-2 focus-visible:outline-forest rounded">
-          <span lang="es">Servicios</span><span lang="en">Services</span>
+          <span data-i18n="nav.services">Servicios</span>
         </a>
         <a href="#diferencia" class="nav-item-anim d2 hover:text-amber focus-visible:outline focus-visible:outline-2 focus-visible:outline-forest rounded">
-          <span lang="es">Por qué ACJ</span><span lang="en">Why ACJ</span>
+          <span data-i18n="nav.why">Por qué ACJ</span>
         </a>
         <a href="#proceso" class="nav-item-anim d3 hover:text-amber focus-visible:outline focus-visible:outline-2 focus-visible:outline-forest rounded">
-          <span lang="es">Cómo trabajamos</span><span lang="en">How we work</span>
+          <span data-i18n="nav.how">Cómo trabajamos</span>
         </a>
       </div>
       <div class="flex items-center gap-2 sm:gap-3">
-        <button id="lang-toggle" type="button" class="min-h-[44px] border border-ink/30 rounded-full px-4 text-xs font-semibold hover:bg-ink/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-forest" aria-label="Cambiar idioma / Switch language">
-          <span lang="es">EN</span><span lang="en">ES</span>
-        </button>
+        <select id="lang-select" aria-label="Idioma / Language" class="min-h-[44px] border border-ink/30 rounded-full pl-3 pr-2 text-xs font-semibold bg-paper hover:bg-ink/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-forest"></select>
         <button type="button" class="whatsapp-cta whitespace-nowrap bg-forest text-white rounded-full px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold hover:bg-forest/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest" aria-haspopup="dialog" aria-controls="whatsapp-dialog">
-          <span lang="es">Hablar con un asesor</span><span lang="en">Talk to an advisor</span>
+          <span data-i18n="cta.talk_advisor">Hablar con un asesor</span>
         </button>
       </div>
     </div>
@@ -75,25 +110,21 @@
       <div class="hero-scrim absolute inset-x-0 top-0 w-full h-[85vh]"></div>
       <div class="relative z-10 flex flex-col justify-center px-6 md:px-14 py-16 md:py-0 max-w-xl">
         <h1 class="hero-anim font-serif text-4xl md:text-5xl font-semibold leading-[1.1] mb-4 max-w-md">
-          <span lang="es">Un circuito por Venezuela, trazado solo para ti.</span>
-          <span lang="en">A route through Venezuela, drawn only for you.</span>
+          <span data-i18n="hero.title">Un circuito por Venezuela, trazado solo para ti.</span>
         </h1>
         <p class="hero-anim font-sans text-paper/70 mb-7">
-          <span lang="es">Agencia de viajes en Venezuela, especialistas en circuitos a medida.</span>
-          <span lang="en">Travel agency in Venezuela, specialists in custom-made circuits.</span>
+          <span data-i18n="hero.subtitle">Agencia de viajes en Venezuela, especialistas en circuitos a medida.</span>
         </p>
         <blockquote class="hero-anim d2 hero-intro border-l-2 border-amber pl-5 mb-9 max-w-sm">
           <p class="font-serif italic text-lg leading-relaxed text-paper/90">
-            <span lang="es">Escuchamos tus sueños, diseñamos cada detalle a tu medida y te acompañamos en cada paso.</span>
-            <span lang="en">We listen to your dreams, design every detail around you, and stay with you every step of the way.</span>
+            <span data-i18n="hero.quote">Escuchamos tus sueños, diseñamos cada detalle a tu medida y te acompañamos en cada paso.</span>
           </p>
           <p class="text-sm text-paper/60 mt-3">
-            <span lang="es">No vendemos destinos: creamos recorridos pensados solo para ti.</span>
-            <span lang="en">We don't sell destinations: we create journeys designed only for you.</span>
+            <span data-i18n="hero.quote_sub">No vendemos destinos: creamos recorridos pensados solo para ti.</span>
           </p>
         </blockquote>
         <button type="button" class="hero-anim d3 whatsapp-cta inline-block w-fit bg-amber text-ink rounded-full px-7 py-3 font-semibold hover:bg-amber/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paper" aria-haspopup="dialog" aria-controls="whatsapp-dialog">
-          <span lang="es">Diseña tu viaje por WhatsApp</span><span lang="en">Plan your trip on WhatsApp</span>
+          <span data-i18n="hero.cta">Diseña tu viaje por WhatsApp</span>
         </button>
       </div>
     </section>
@@ -115,8 +146,7 @@
       <div class="absolute inset-x-0 top-[85vh] bottom-0 bg-paper"></div>
       <div class="relative z-10 py-20 px-5 max-w-6xl mx-auto">
       <h2 class="font-serif text-3xl font-semibold text-center mb-12 text-ink">
-        <span lang="es">Nuestros servicios</span>
-        <span lang="en">Our services</span>
+        <span data-i18n="services.heading">Nuestros servicios</span>
       </h2>
       <div class="grid md:grid-cols-3 gap-10">
         <article class="reveal-item group">
@@ -126,16 +156,13 @@
           </div>
           <div class="card-panel rounded-xl p-5">
           <h3 class="font-serif text-xl font-semibold mb-3">
-            <span lang="es">Circuitos terrestres</span>
-            <span lang="en">Land circuits</span>
+            <span data-i18n="services.circuitos.title">Circuitos terrestres</span>
           </h3>
           <p class="text-stone leading-relaxed mb-4">
-            <span lang="es">Con ACJ Viajes, tu circuito terrestre se diseña a tu medida. Elegimos rutas, tiempos y paradas según tus gustos, con guías de confianza y transporte seguro. Cuidamos cada detalle para que solo te dediques a disfrutar. Sin itinerarios genéricos ni sorpresas: un asesor te acompaña antes, durante y después del viaje.</span>
-            <span lang="en">With ACJ Viajes, your land circuit is designed around you. We choose the routes, pace, and stops to match your preferences, with trusted guides and secure transportation. We take care of every detail so you can simply enjoy the journey. No generic itineraries, no surprises: one advisor accompanies you before, during, and after your trip.</span>
+            <span data-i18n="services.circuitos.body">Con ACJ Viajes, tu circuito terrestre se diseña a tu medida. Elegimos rutas, tiempos y paradas según tus gustos, con guías de confianza y transporte seguro. Cuidamos cada detalle para que solo te dediques a disfrutar. Sin itinerarios genéricos ni sorpresas: un asesor te acompaña antes, durante y después del viaje.</span>
           </p>
           <p class="font-semibold text-forest">
-            <span lang="es">ACJ Viajes: viaja, descubre, vive.</span>
-            <span lang="en">ACJ Viajes: travel, discover, live.</span>
+            <span data-i18n="tagline">ACJ Viajes: viaja, descubre, vive.</span>
           </p>
           </div>
         </article>
@@ -146,16 +173,13 @@
           </div>
           <div class="card-panel rounded-xl p-5">
           <h3 class="font-serif text-xl font-semibold mb-3">
-            <span lang="es">Boletería nacional e internacional</span>
-            <span lang="en">Domestic &amp; international ticketing</span>
+            <span data-i18n="services.boleteria.title">Boletería nacional e internacional</span>
           </h3>
           <p class="text-stone leading-relaxed mb-4">
-            <span lang="es">Con ACJ Viajes, volar es más fácil. Comparamos aerolíneas, horarios y tarifas para encontrar la mejor opción según tu presupuesto y necesidades. Te asesoramos en cambios, escalas y documentación, y estamos disponibles ante cualquier imprevisto. Ya sea un vuelo nacional o internacional, tu boleto llega con la tranquilidad de una atención personal y exclusiva.</span>
-            <span lang="en">With ACJ Viajes, flying is easier. We compare airlines, schedules, and fares to find the best option for your budget and needs. We guide you through changes, layovers, and documentation, and we're available for any unexpected situation. Whether it's a domestic or international flight, your ticket arrives with the confidence of personal, exclusive attention.</span>
+            <span data-i18n="services.boleteria.body">Con ACJ Viajes, volar es más fácil. Comparamos aerolíneas, horarios y tarifas para encontrar la mejor opción según tu presupuesto y necesidades. Te asesoramos en cambios, escalas y documentación, y estamos disponibles ante cualquier imprevisto. Ya sea un vuelo nacional o internacional, tu boleto llega con la tranquilidad de una atención personal y exclusiva.</span>
           </p>
           <p class="font-semibold text-forest">
-            <span lang="es">ACJ Viajes: viaja, descubre, vive.</span>
-            <span lang="en">ACJ Viajes: travel, discover, live.</span>
+            <span data-i18n="tagline">ACJ Viajes: viaja, descubre, vive.</span>
           </p>
           </div>
         </article>
@@ -166,16 +190,13 @@
           </div>
           <div class="card-panel rounded-xl p-5">
           <h3 class="font-serif text-xl font-semibold mb-3">
-            <span lang="es">Hospedaje nacional e internacional</span>
-            <span lang="en">Domestic &amp; international lodging</span>
+            <span data-i18n="services.hospedaje.title">Hospedaje nacional e internacional</span>
           </h3>
           <p class="text-stone leading-relaxed mb-4">
-            <span lang="es">Con ACJ Viajes, encuentras el lugar ideal para descansar. Seleccionamos hoteles y alojamientos según tu estilo, presupuesto y ubicación deseada, en cualquier destino, nacional o internacional. Negociamos tarifas preferenciales, verificamos la calidad y gestionamos tu reserva sin complicaciones. Te hospedas con la confianza de contar con un asesor exclusivo que cuida cada detalle.</span>
-            <span lang="en">With ACJ Viajes, you find the ideal place to rest. We select hotels and accommodations to match your style, budget, and preferred location, anywhere in the world. We negotiate preferential rates, verify quality, and manage your reservation without complications. You stay with the confidence of an exclusive advisor looking after every detail.</span>
+            <span data-i18n="services.hospedaje.body">Con ACJ Viajes, encuentras el lugar ideal para descansar. Seleccionamos hoteles y alojamientos según tu estilo, presupuesto y ubicación deseada, en cualquier destino, nacional o internacional. Negociamos tarifas preferenciales, verificamos la calidad y gestionamos tu reserva sin complicaciones. Te hospedas con la confianza de contar con un asesor exclusivo que cuida cada detalle.</span>
           </p>
           <p class="font-semibold text-forest">
-            <span lang="es">ACJ Viajes: viaja, descubre, vive.</span>
-            <span lang="en">ACJ Viajes: travel, discover, live.</span>
+            <span data-i18n="tagline">ACJ Viajes: viaja, descubre, vive.</span>
           </p>
           </div>
         </article>
@@ -188,44 +209,36 @@
       <div class="city-scrim absolute inset-x-0 top-0 w-full h-[85vh]"></div>
       <div class="relative z-10 py-20 px-5 max-w-4xl mx-auto">
         <p class="text-xl md:text-2xl font-serif font-semibold leading-snug mb-12 max-w-2xl">
-          <span lang="es">Otras agencias venden servicios; en ACJ Viajes creamos tu experiencia. Un asesor exclusivo, un plan a tu medida y respaldo en cada paso. ACJ Viajes: viaja, descubre, vive.</span>
-          <span lang="en">Other agencies sell services; at ACJ Viajes we create your experience. One exclusive advisor, a plan made for you, and support at every step. ACJ Viajes: travel, discover, live.</span>
+          <span data-i18n="diff.intro">Otras agencias venden servicios; en ACJ Viajes creamos tu experiencia. Un asesor exclusivo, un plan a tu medida y respaldo en cada paso. ACJ Viajes: viaja, descubre, vive.</span>
         </p>
         <ul class="divide-y divide-paper/15 border-t border-paper/15">
           <li class="reveal-item flex items-baseline gap-5 py-4">
             <span class="text-amber font-serif italic flex-shrink-0">—</span>
-            <span lang="es">Itinerario a medida: tú decides rutas, ritmo y paradas.</span>
-            <span lang="en">A custom itinerary: you choose the routes, pace, and stops.</span>
+            <span data-i18n="diff.item1">Itinerario a medida: tú decides rutas, ritmo y paradas.</span>
           </li>
           <li class="reveal-item flex items-baseline gap-5 py-4">
             <span class="text-amber font-serif italic flex-shrink-0">—</span>
-            <span lang="es">Asesor único que te acompaña antes, durante y después del viaje.</span>
-            <span lang="en">One dedicated advisor with you before, during, and after the trip.</span>
+            <span data-i18n="diff.item2">Asesor único que te acompaña antes, durante y después del viaje.</span>
           </li>
           <li class="reveal-item flex items-baseline gap-5 py-4">
             <span class="text-amber font-serif italic flex-shrink-0">—</span>
-            <span lang="es">Flexibilidad en fechas, grupos pequeños y preferencias especiales.</span>
-            <span lang="en">Flexibility in dates, small groups, and special preferences.</span>
+            <span data-i18n="diff.item3">Flexibilidad en fechas, grupos pequeños y preferencias especiales.</span>
           </li>
           <li class="reveal-item flex items-baseline gap-5 py-4">
             <span class="text-amber font-serif italic flex-shrink-0">—</span>
-            <span lang="es">Experiencia exclusiva, nunca compartida con un grupo masivo.</span>
-            <span lang="en">An exclusive experience, never shared with a mass group.</span>
+            <span data-i18n="diff.item4">Experiencia exclusiva, nunca compartida con un grupo masivo.</span>
           </li>
           <li class="reveal-item flex items-baseline gap-5 py-4">
             <span class="text-amber font-serif italic flex-shrink-0">—</span>
-            <span lang="es">Asesoría real: comparamos y recomendamos, no solo emitimos.</span>
-            <span lang="en">Real advice: we compare and recommend, we don't just issue tickets.</span>
+            <span data-i18n="diff.item5">Asesoría real: comparamos y recomendamos, no solo emitimos.</span>
           </li>
           <li class="reveal-item flex items-baseline gap-5 py-4">
             <span class="text-amber font-serif italic flex-shrink-0">—</span>
-            <span lang="es">Acompañamiento directo ante cambios, cancelaciones o retrasos.</span>
-            <span lang="en">Direct support when changes, cancellations, or delays come up.</span>
+            <span data-i18n="diff.item6">Acompañamiento directo ante cambios, cancelaciones o retrasos.</span>
           </li>
           <li class="reveal-item flex items-baseline gap-5 py-4">
             <span class="text-amber font-serif italic flex-shrink-0">—</span>
-            <span lang="es">Trato cercano: te reconocemos por tu nombre y tu historial, no eres un número más.</span>
-            <span lang="en">A personal relationship: you're known by name and history, not a number.</span>
+            <span data-i18n="diff.item7">Trato cercano: te reconocemos por tu nombre y tu historial, no eres un número más.</span>
           </li>
         </ul>
       </div>
@@ -236,8 +249,7 @@
       <div class="night-scrim absolute inset-x-0 top-0 w-full h-[85vh]"></div>
       <div class="relative z-10 py-20 px-5 max-w-4xl mx-auto">
       <h2 class="font-serif text-3xl font-semibold text-center mb-12">
-        <span lang="es">Cómo trabajamos</span>
-        <span lang="en">How we work</span>
+        <span data-i18n="nav.how">Cómo trabajamos</span>
       </h2>
       <div class="relative grid md:grid-cols-3 gap-8 text-center">
         <div class="route-line" aria-hidden="true"></div>
@@ -246,11 +258,10 @@
             <span class="step-number font-serif text-2xl leading-none text-amber" aria-hidden="true">1</span>
           </div>
           <h3 class="font-semibold mb-2">
-            <span lang="es">Antes del viaje</span><span lang="en">Before the trip</span>
+            <span data-i18n="process.step1.title">Antes del viaje</span>
           </h3>
           <p class="text-paper/70">
-            <span lang="es">Un asesor exclusivo escucha tus gustos y diseña cada ruta, tiempo y parada contigo.</span>
-            <span lang="en">One dedicated advisor listens to your preferences and designs every route, pace, and stop with you.</span>
+            <span data-i18n="process.step1.body">Un asesor exclusivo escucha tus gustos y diseña cada ruta, tiempo y parada contigo.</span>
           </p>
         </div>
         <div class="reveal-item relative">
@@ -258,11 +269,10 @@
             <span class="step-number font-serif text-2xl leading-none text-amber" aria-hidden="true">2</span>
           </div>
           <h3 class="font-semibold mb-2">
-            <span lang="es">Durante el viaje</span><span lang="en">During the trip</span>
+            <span data-i18n="process.step2.title">Durante el viaje</span>
           </h3>
           <p class="text-paper/70">
-            <span lang="es">Guías de confianza, transporte seguro y grupos pequeños o privados, con fechas flexibles.</span>
-            <span lang="en">Trusted guides, secure transportation, and small or private groups, with flexible dates.</span>
+            <span data-i18n="process.step2.body">Guías de confianza, transporte seguro y grupos pequeños o privados, con fechas flexibles.</span>
           </p>
         </div>
         <div class="reveal-item relative">
@@ -270,11 +280,10 @@
             <span class="step-number font-serif text-2xl leading-none text-amber" aria-hidden="true">3</span>
           </div>
           <h3 class="font-semibold mb-2">
-            <span lang="es">Después del viaje</span><span lang="en">After the trip</span>
+            <span data-i18n="process.step3.title">Después del viaje</span>
           </h3>
           <p class="text-paper/70">
-            <span lang="es">El mismo asesor sigue disponible ante cualquier imprevisto, cambio o pregunta.</span>
-            <span lang="en">The same advisor stays available for any unexpected situation, change, or question.</span>
+            <span data-i18n="process.step3.body">El mismo asesor sigue disponible ante cualquier imprevisto, cambio o pregunta.</span>
           </p>
         </div>
       </div>
@@ -286,15 +295,13 @@
       <div class="shrine-scrim absolute inset-x-0 top-0 w-full h-[85vh]"></div>
       <div class="relative z-10 py-24 px-5 max-w-2xl mx-auto text-center">
         <h2 class="font-serif text-4xl md:text-5xl font-semibold tracking-wide text-amber mb-4">
-          <span lang="es">Viaja. Descubre. Vive.</span>
-          <span lang="en">Travel. Discover. Live.</span>
+          <span data-i18n="contact.heading">Viaja. Descubre. Vive.</span>
         </h2>
         <p class="text-paper/70 mb-8">
-          <span lang="es">Cuéntanos qué viaje tienes en mente y diseñamos cada detalle contigo, por WhatsApp.</span>
-          <span lang="en">Tell us about the trip you have in mind and we'll design every detail with you, over WhatsApp.</span>
+          <span data-i18n="contact.body">Cuéntanos qué viaje tienes en mente y diseñamos cada detalle contigo, por WhatsApp.</span>
         </p>
         <button type="button" class="whatsapp-cta inline-block bg-amber text-ink rounded-full px-8 py-3 font-semibold hover:bg-amber/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paper" aria-haspopup="dialog" aria-controls="whatsapp-dialog">
-          <span lang="es">Hablar con un asesor</span><span lang="en">Talk to an advisor</span>
+          <span data-i18n="cta.talk_advisor">Hablar con un asesor</span>
         </button>
       </div>
     </section>
@@ -313,18 +320,17 @@
         <span aria-hidden="true">&times;</span>
       </button>
       <h2 class="font-serif text-xl font-semibold mb-1">
-        <span lang="es">¿En qué te ayudamos?</span><span lang="en">How can we help?</span>
+        <span data-i18n="dialog.heading">¿En qué te ayudamos?</span>
       </h2>
       <p class="text-sm text-stone mb-6">
-        <span lang="es">Elige una opción para escribirnos por WhatsApp.</span>
-        <span lang="en">Pick an option to message us on WhatsApp.</span>
+        <span data-i18n="dialog.subtitle">Elige una opción para escribirnos por WhatsApp.</span>
       </p>
       <div class="flex flex-col gap-3">
         <a data-whatsapp-option="reservations" href="https://wa.me/584147927455?text=Hola%2C%20quiero%20hacer%20una%20reserva%20con%20ACJ%20Viajes" target="_blank" rel="noopener" class="bg-forest text-white rounded-full px-5 py-3 font-semibold hover:bg-forest/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest">
-          <span lang="es">Reservas</span><span lang="en">Reservations</span>
+          <span data-i18n="dialog.reservations">Reservas</span>
         </a>
         <a data-whatsapp-option="contact" href="https://wa.me/584221820114?text=Hola%2C%20quiero%20informaci%C3%B3n%20sobre%20los%20servicios%20de%20ACJ%20Viajes" target="_blank" rel="noopener" class="bg-amber text-ink rounded-full px-5 py-3 font-semibold hover:bg-amber/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paper">
-          <span lang="es">Contacto</span><span lang="en">Contact</span>
+          <span data-i18n="common.contact">Contacto</span>
         </a>
       </div>
     </div>
@@ -338,76 +344,73 @@
             <img src="assets/images/acj-logo-light.png" alt="ACJ Travel" class="logo-mark h-14 w-auto hover:opacity-80 transition-opacity" />
           </a>
           <p class="text-sm text-paper/60 leading-relaxed max-w-xs">
-            <span lang="es">Agencia de viajes en Venezuela especializada en circuitos a medida, boletería y hospedaje nacional e internacional.</span>
-            <span lang="en">Travel agency in Venezuela specializing in custom-made circuits, and domestic and international ticketing and lodging.</span>
+            <span data-i18n="footer.about">Agencia de viajes en Venezuela especializada en circuitos a medida, boletería y hospedaje nacional e internacional.</span>
           </p>
         </div>
 
         <div class="footer-col reveal-item">
           <h3 class="font-serif text-base font-semibold mb-4">
-            <span lang="es">Enlaces</span><span lang="en">Links</span>
+            <span data-i18n="footer.links_heading">Enlaces</span>
           </h3>
           <nav class="flex flex-col gap-2 text-sm text-paper/60">
             <a href="#servicios" class="hover:text-amber transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-amber rounded w-fit">
-              <span lang="es">Servicios</span><span lang="en">Services</span>
+              <span data-i18n="nav.services">Servicios</span>
             </a>
             <a href="#diferencia" class="hover:text-amber transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-amber rounded w-fit">
-              <span lang="es">Por qué ACJ</span><span lang="en">Why ACJ</span>
+              <span data-i18n="nav.why">Por qué ACJ</span>
             </a>
             <a href="#proceso" class="hover:text-amber transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-amber rounded w-fit">
-              <span lang="es">Cómo trabajamos</span><span lang="en">How we work</span>
+              <span data-i18n="nav.how">Cómo trabajamos</span>
             </a>
           </nav>
         </div>
 
         <div class="footer-col reveal-item">
           <h3 class="font-serif text-base font-semibold mb-4">
-            <span lang="es">Servicios</span><span lang="en">Services</span>
+            <span data-i18n="services.heading">Servicios</span>
           </h3>
           <nav class="flex flex-col gap-2 text-sm text-paper/60">
             <a href="#servicios" class="hover:text-amber transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-amber rounded w-fit">
-              <span lang="es">Circuitos terrestres</span><span lang="en">Land circuits</span>
+              <span data-i18n="services.circuitos.title">Circuitos terrestres</span>
             </a>
             <a href="#servicios" class="hover:text-amber transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-amber rounded w-fit">
-              <span lang="es">Boletería nacional e internacional</span><span lang="en">Domestic &amp; international ticketing</span>
+              <span data-i18n="services.boleteria.title">Boletería nacional e internacional</span>
             </a>
             <a href="#servicios" class="hover:text-amber transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-amber rounded w-fit">
-              <span lang="es">Hospedaje nacional e internacional</span><span lang="en">Domestic &amp; international lodging</span>
+              <span data-i18n="services.hospedaje.title">Hospedaje nacional e internacional</span>
             </a>
           </nav>
         </div>
 
         <div class="footer-col reveal-item">
           <h3 class="font-serif text-base font-semibold mb-4">
-            <span lang="es">Contacto</span><span lang="en">Contact</span>
+            <span data-i18n="common.contact">Contacto</span>
           </h3>
           <p class="text-sm text-paper/60 mb-4">
-            <span lang="es">Cuéntanos tu viaje y te respondemos por WhatsApp.</span>
-            <span lang="en">Tell us about your trip and we'll reply on WhatsApp.</span>
+            <span data-i18n="footer.contact_body">Cuéntanos tu viaje y te respondemos por WhatsApp.</span>
           </p>
           <button type="button" class="whatsapp-cta inline-block w-fit bg-amber text-ink rounded-full px-5 py-2 text-sm font-semibold hover:bg-amber/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paper" aria-haspopup="dialog" aria-controls="whatsapp-dialog">
-            <span lang="es">Hablar con un asesor</span><span lang="en">Talk to an advisor</span>
+            <span data-i18n="cta.talk_advisor">Hablar con un asesor</span>
           </button>
         </div>
       </div>
 
       <div class="reveal-item flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-sm text-paper/50 mb-6">
         <p class="font-serif italic">
-          <span lang="es">ACJ Viajes: viaja, descubre, vive.</span>
-          <span lang="en">ACJ Viajes: travel, discover, live.</span>
+          <span data-i18n="tagline">ACJ Viajes: viaja, descubre, vive.</span>
         </p>
         <p>&copy; <span id="footer-year"></span> ACJ Viajes</p>
       </div>
 
       <div class="reveal-item flex flex-wrap gap-x-6 gap-y-2 text-xs text-paper/40 border-t border-paper/10 pt-6">
         <a href="privacidad.html" class="hover:text-amber transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-amber rounded">
-          <span lang="es">Política de privacidad</span><span lang="en">Privacy policy</span>
+          <span data-i18n="footer.privacy">Política de privacidad</span>
         </a>
         <a href="terminos.html" class="hover:text-amber transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-amber rounded">
-          <span lang="es">Términos y condiciones</span><span lang="en">Terms &amp; conditions</span>
+          <span data-i18n="footer.terms">Términos y condiciones</span>
         </a>
         <a href="cookies.html" class="hover:text-amber transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-amber rounded">
-          <span lang="es">Cookies</span><span lang="en">Cookies</span>
+          <span data-i18n="footer.cookies">Cookies</span>
         </a>
       </div>
     </div>
@@ -416,11 +419,10 @@
   <div id="cookie-notice" class="hidden fixed inset-x-0 bottom-0 z-50 bg-ink text-paper border-t border-paper/15 px-5 py-4">
     <div class="max-w-4xl mx-auto flex flex-col sm:flex-row sm:items-center gap-4 justify-between">
       <p class="text-sm text-paper/70">
-        <span lang="es">Este sitio no utiliza cookies de rastreo. <a href="cookies.html" class="underline hover:text-amber">Más información</a>.</span>
-        <span lang="en">This site does not use tracking cookies. <a href="cookies.html" class="underline hover:text-amber">Learn more</a>.</span>
+        <span data-i18n="cookie.notice">Este sitio no utiliza cookies de rastreo. <a href="cookies.html" class="underline hover:text-amber">Más información</a>.</span>
       </p>
       <button id="cookie-dismiss" type="button" class="bg-amber text-ink rounded-full px-5 py-2 text-sm font-semibold hover:bg-amber/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paper w-fit flex-shrink-0">
-        <span lang="es">Entendido</span><span lang="en">Got it</span>
+        <span data-i18n="cookie.dismiss">Entendido</span>
       </button>
     </div>
   </div>

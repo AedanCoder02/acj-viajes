@@ -4,6 +4,7 @@ import { readFileSync, existsSync, statSync } from 'node:fs';
 
 const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const html_css = readFileSync(new URL('../assets/styles.css', import.meta.url), 'utf8');
+const i18nJs = readFileSync(new URL('../assets/i18n.js', import.meta.url), 'utf8');
 
 test('photo sections ship a mobile-sized srcset and a lazy/eager loading hint, not one multi-MB file for every device', () => {
   const photoImgs = [...html.matchAll(/<img[^>]*src="assets\/images\/(hero-roraima|playa|ciudad|noche|japon|circuitos|boleteria|hospedaje)\.jpg"[^>]*>/g)].map((m) => m[0]);
@@ -33,41 +34,44 @@ test('SEO target phrase appears in the title', () => {
   assert.match(html, /<title>[^<]*agencia de viajes en Venezuela[^<]*circuitos a medida[^<]*<\/title>/i);
 });
 
-test('nav exposes a language toggle button', () => {
-  assert.match(html, /id="lang-toggle"/);
+test('nav exposes a language selector covering all 9 supported languages', () => {
+  assert.match(html, /id="lang-select"/);
+  for (const code of ['en', 'es', 'pt-BR', 'pt-PT', 'fr', 'it', 'de', 'ja', 'zh']) {
+    assert.match(i18nJs, new RegExp(`['"]?${code}['"]?:\\s*\\{`), `expected a '${code}' dictionary in assets/i18n.js`);
+  }
 });
 
 test('nav includes a WhatsApp CTA', () => {
   assert.match(html, /<nav[\s\S]*whatsapp-cta[\s\S]*<\/nav>/);
 });
 
-test('hero headline (Spanish) carries the SEO phrase', () => {
-  assert.match(html, /lang="es"[^>]*>[^<]*[Aa]gencia de viajes en Venezuela[^<]*circuitos a medida/);
+test('hero headline (Spanish default) carries the SEO phrase', () => {
+  assert.match(html, /data-i18n="hero\.subtitle"[^>]*>[^<]*[Aa]gencia de viajes en Venezuela[^<]*circuitos a medida/);
 });
 
-test('hero mission statement is present in both languages', () => {
+test('hero mission statement is present in both Spanish (default markup) and English (dictionary)', () => {
   assert.match(html, /Escuchamos tus sueños, diseñamos cada detalle a tu medida/);
-  assert.match(html, /We listen to your dreams, design every detail around you/);
+  assert.match(i18nJs, /We listen to your dreams, design every detail around you/);
 });
 
-test('services section has three bilingual cards with the client-provided copy', () => {
+test('services section has three cards with the client-provided copy, in Spanish (default markup) and English (dictionary)', () => {
   assert.match(html, /Elegimos rutas, tiempos y paradas según tus gustos/);
   assert.match(html, /Comparamos aerolíneas, horarios y tarifas/);
   assert.match(html, /Negociamos tarifas preferenciales, verificamos la calidad/);
-  assert.match(html, /We choose the routes, pace, and stops to match your preferences/);
-  assert.match(html, /We compare airlines, schedules, and fares/);
-  assert.match(html, /We negotiate preferential rates, verify quality/);
+  assert.match(i18nJs, /We choose the routes, pace, and stops to match your preferences/);
+  assert.match(i18nJs, /We compare airlines, schedules, and fares/);
+  assert.match(i18nJs, /We negotiate preferential rates, verify quality/);
 });
 
-test('each service closes with the ACJ Viajes tagline in both languages', () => {
+test('each service closes with the ACJ Viajes tagline (Spanish default markup, English in dictionary)', () => {
   const servicesSection = html.match(/<section id="servicios"[\s\S]*?<\/section>/)[0];
   assert.equal((servicesSection.match(/ACJ Viajes: viaja, descubre, vive\./g) || []).length, 3);
-  assert.equal((servicesSection.match(/ACJ Viajes: travel, discover, live\./g) || []).length, 3);
+  assert.match(i18nJs, /ACJ Viajes: travel, discover, live\./);
 });
 
-test('differentiation section carries the key client message, both languages', () => {
+test('differentiation section carries the key client message, Spanish (default markup) and English (dictionary)', () => {
   assert.match(html, /Otras agencias venden servicios; en ACJ Viajes creamos tu experiencia/);
-  assert.match(html, /Other agencies sell services; at ACJ Viajes we create your experience/);
+  assert.match(i18nJs, /Other agencies sell services; at ACJ Viajes we create your experience/);
 });
 
 test('differentiation bullets are present (Spanish)', () => {
@@ -86,9 +90,9 @@ test('closing CTA section has a WhatsApp button', () => {
   assert.match(html, /<section[^>]*id="contacto"[\s\S]*whatsapp-cta[\s\S]*<\/section>/);
 });
 
-test('footer carries the tagline in both languages and a dynamic year', () => {
+test('footer carries the tagline (Spanish default markup, English in dictionary) and a dynamic year', () => {
   assert.match(html, /viaja, descubre, vive/i);
-  assert.match(html, /travel, discover, live/i);
+  assert.match(i18nJs, /travel, discover, live/i);
   assert.match(html, /id="footer-year"/);
 });
 
@@ -146,10 +150,10 @@ test('nav WhatsApp CTA is reachable on mobile (not inside the hidden md:flex wra
   assert.match(navHtml, /whatsapp-cta/);
 });
 
-test('language toggle button meets the 44px minimum tap target', () => {
+test('language selector meets the 44px minimum tap target', () => {
   const navHtml = html.match(/<nav[\s\S]*?<\/nav>/)[0];
-  const toggleTag = navHtml.match(/<button id="lang-toggle"[^>]*>/)[0];
-  assert.match(toggleTag, /min-h-\[44px\]/);
+  const selectTag = navHtml.match(/<select id="lang-select"[^>]*>/)[0];
+  assert.match(selectTag, /min-h-\[44px\]/);
 });
 
 test('head has a canonical link and Open Graph tags including og:image', () => {
@@ -171,7 +175,7 @@ test('interactive elements have hover and focus-visible states', () => {
 });
 
 test('differentiation bullet English translation is a complete sentence', () => {
-  assert.match(html, /we don't just issue tickets/);
+  assert.match(i18nJs, /we don't just issue tickets/);
 });
 
 // --- Motion pass (Promar-grade kinetic feel, new identity, vanilla CSS/JS only) ---
@@ -270,7 +274,7 @@ test('logo has no tracked-out all-caps tagline with middle dots baked into the m
 test('the brand slogan appears as its own impactful, standalone headline at the closing CTA', () => {
   const ctaSection = html.match(/<section id="contacto"[\s\S]*?<\/section>/)[0];
   assert.match(ctaSection, /Viaja\. Descubre\. Vive\./);
-  assert.match(ctaSection, /Travel\. Discover\. Live\./);
+  assert.match(i18nJs, /Travel\. Discover\. Live\./);
 });
 
 test('the hero image is full-bleed across the whole section, not confined to a split panel', () => {
