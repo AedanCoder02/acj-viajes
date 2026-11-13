@@ -1,9 +1,12 @@
+import { I18N, I18N_HTML_KEYS, SUPPORTED_LANGS, LANG_LABELS } from './i18n.js';
+
 export const CONFIG = {
   whatsappNumbers: {
     reservations: '584147927455',
     contact: '584221820114',
   },
   defaultLang: 'es',
+  langStorageKey: 'acj-lang',
 };
 
 export function buildWhatsAppUrl(number, message) {
@@ -11,16 +14,64 @@ export function buildWhatsAppUrl(number, message) {
   return `https://wa.me/${digits}?text=${encodeURIComponent(message)}`;
 }
 
-export function toggleLanguage(doc = document) {
-  const current = doc.documentElement.getAttribute('data-lang');
-  const next = current === 'es' ? 'en' : 'es';
-  applyLanguage(next, doc);
-  return next;
+// Matches a browser language tag to one of our supported codes, falling back
+// to another member of the same language family (e.g. pt-AO -> pt-PT) before
+// giving up and falling back to the site's base language.
+export function detectLanguage(browserLanguages = [], supported = SUPPORTED_LANGS, fallback = 'es') {
+  for (const raw of browserLanguages) {
+    if (!raw) continue;
+    const tag = raw.toLowerCase();
+    const exact = supported.find((code) => code.toLowerCase() === tag);
+    if (exact) return exact;
+
+    const family = tag.split('-')[0];
+    if (family === 'pt') {
+      // Brazilian Portuguese only for pt-BR; every other pt-* region (pt-AO, pt-MZ, ...)
+      // falls back to European Portuguese, which it reads closer to than pt-BR.
+      return tag === 'pt-br' ? 'pt-BR' : 'pt-PT';
+    }
+    const match = supported.find((code) => code.toLowerCase().split('-')[0] === family);
+    if (match) return match;
+  }
+  return fallback;
+}
+
+export function getStoredLanguage(storage = (typeof localStorage !== 'undefined' ? localStorage : null), key = CONFIG.langStorageKey) {
+  if (!storage) return null;
+  const value = storage.getItem(key);
+  return SUPPORTED_LANGS.includes(value) ? value : null;
+}
+
+export function setStoredLanguage(lang, storage = (typeof localStorage !== 'undefined' ? localStorage : null), key = CONFIG.langStorageKey) {
+  if (!storage) return;
+  storage.setItem(key, lang);
+}
+
+export function resolveInitialLanguage({ stored, browserLanguages = [], supported = SUPPORTED_LANGS, fallback = CONFIG.defaultLang } = {}) {
+  if (stored && supported.includes(stored)) return stored;
+  return detectLanguage(browserLanguages, supported, fallback);
 }
 
 export function applyLanguage(lang, doc = document) {
+  const dict = I18N[lang] || I18N[CONFIG.defaultLang];
   doc.documentElement.setAttribute('data-lang', lang);
   doc.documentElement.setAttribute('lang', lang);
+
+  doc.querySelectorAll('[data-i18n]').forEach((el) => {
+    const key = el.getAttribute('data-i18n');
+    const value = dict[key];
+    if (value === undefined) return;
+    if (I18N_HTML_KEYS.has(key)) {
+      el.innerHTML = value;
+    } else {
+      el.textContent = value;
+    }
+  });
+
+  const select = doc.getElementById('lang-select');
+  if (select) select.value = lang;
+
+  return lang;
 }
 
 export function currentYear(date = new Date()) {
@@ -33,9 +84,25 @@ export function isScrolled(scrollY, threshold = 8) {
 
 if (typeof document !== 'undefined') {
   document.addEventListener('DOMContentLoaded', () => {
-    const toggleBtn = document.getElementById('lang-toggle');
-    if (toggleBtn) {
-      toggleBtn.addEventListener('click', () => toggleLanguage());
+    const langSelect = document.getElementById('lang-select');
+    if (langSelect) {
+      Object.keys(LANG_LABELS).forEach((code) => {
+        const option = document.createElement('option');
+        option.value = code;
+        option.textContent = LANG_LABELS[code];
+        langSelect.appendChild(option);
+      });
+
+      const initialLang = resolveInitialLanguage({
+        stored: getStoredLanguage(),
+        browserLanguages: navigator.languages || [navigator.language],
+      });
+      applyLanguage(initialLang);
+
+      langSelect.addEventListener('change', () => {
+        setStoredLanguage(langSelect.value);
+        applyLanguage(langSelect.value);
+      });
     }
 
     const whatsappMessages = {
