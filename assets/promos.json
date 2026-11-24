@@ -1,0 +1,59 @@
+[
+  {
+    "id": "circuito-roraima",
+    "type": "package",
+    "status": "published",
+    "order": 1,
+    "image": "assets/images/circuitos@900w.jpg",
+    "title": { "es": "Expedición al Roraima", "en": "Roraima Expedition" },
+    "description": {
+      "es": "Siete días de trekking guiado hasta la cima del tepuy más alto de Venezuela, con todo incluido.",
+      "en": "Seven days of guided trekking to the summit of Venezuela's tallest tepui, all inclusive."
+    },
+    "price": { "amount": 650, "currency": "USD", "note": { "es": "por persona", "en": "per person" } },
+    "cta": {
+      "type": "whatsapp",
+      "target": "reservations",
+      "label": { "es": "Reservar cupo", "en": "Book your spot" }
+    },
+    "updatedAt": "2026-11-24"
+  },
+  {
+    "id": "promo-hospedaje-temporada",
+    "type": "promo",
+    "status": "published",
+    "order": 2,
+    "image": "assets/images/hospedaje@900w.jpg",
+    "title": { "es": "15% en hospedaje nacional", "en": "15% off domestic lodging" },
+    "description": {
+      "es": "Reserva tu alojamiento en destinos nacionales esta temporada y obtén un descuento exclusivo.",
+      "en": "Book your stay at domestic destinations this season and get an exclusive discount."
+    },
+    "price": null,
+    "cta": {
+      "type": "whatsapp",
+      "target": "reservations",
+      "label": { "es": "Aprovechar promoción", "en": "Claim the deal" }
+    },
+    "updatedAt": "2026-11-24"
+  },
+  {
+    "id": "noticia-temporada-alta",
+    "type": "news",
+    "status": "published",
+    "order": 3,
+    "image": "assets/images/boleteria@900w.jpg",
+    "title": { "es": "Temporada alta: reserva con anticipación", "en": "High season: book ahead" },
+    "description": {
+      "es": "La disponibilidad de boletos y hospedaje se reduce en diciembre. Te recomendamos reservar con tiempo.",
+      "en": "Ticket and lodging availability drops in December. We recommend booking early."
+    },
+    "price": null,
+    "cta": {
+      "type": "whatsapp",
+      "target": "contact",
+      "label": { "es": "Hablar con un asesor", "en": "Talk to an advisor" }
+    },
+    "updatedAt": "2026-11-24"
+  }
+]

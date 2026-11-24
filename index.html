@@ -129,6 +129,28 @@
       </div>
     </section>
 
+    <section id="promos" class="reveal relative bg-paper overflow-hidden">
+      <div class="relative z-10 py-20 px-5 max-w-6xl mx-auto">
+        <h2 class="font-serif text-3xl font-semibold text-center mb-3 text-ink">
+          <span data-i18n="promos.heading">Paquetes, promociones y novedades</span>
+        </h2>
+        <p class="text-center text-stone mb-12 max-w-2xl mx-auto">
+          <span data-i18n="promos.subheading">Ofertas y circuitos destacados, actualizados por nuestro equipo.</span>
+        </p>
+        <div id="promos-grid" class="grid md:grid-cols-3 gap-8" aria-live="polite"></div>
+        <p id="promos-empty" class="hidden text-center text-stone">
+          <span data-i18n="promos.empty">Pronto compartiremos nuevos paquetes y promociones.</span>
+        </p>
+        <!-- Translated labels consumed by assets/promos.js when it builds each card; kept out of the tab order. -->
+        <div hidden aria-hidden="true">
+          <span data-i18n="promos.badge.package" data-promo-label="package">Paquete</span>
+          <span data-i18n="promos.badge.promo" data-promo-label="promo">Promoción</span>
+          <span data-i18n="promos.badge.news" data-promo-label="news">Novedad</span>
+          <span data-i18n="promos.cta_default" data-promo-label="cta_default">Ver detalles</span>
+        </div>
+      </div>
+    </section>
+
     <div class="marquee overflow-hidden bg-paper border-b border-ink/10 py-3">
       <div class="marquee-track">
         <div class="flex items-center gap-10 pr-10 font-serif italic text-ink/50 text-base whitespace-nowrap">
@@ -428,5 +450,6 @@
   </div>
 
   <script type="module" src="assets/script.js"></script>
+  <script type="module" src="assets/promos.js"></script>
 </body>
 </html>
