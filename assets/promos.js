@@ -93,26 +93,35 @@ function collectLabels(doc) {
 export async function initPromos(doc = document, fetchImpl = fetch) {
   const container = doc.getElementById('promos-grid');
   const emptyState = doc.getElementById('promos-empty');
-  if (!container) return;
+  if (!container) {
+    console.warn('[promos] #promos-grid not found in the document — skipping init');
+    return;
+  }
 
   let published = [];
   try {
     const items = await loadPromos(fetchImpl);
     published = publishedPromos(items);
   } catch (e) {
+    console.error('[promos] failed to load assets/promos.json:', e);
     published = [];
   }
 
   const render = () => {
-    const lang = doc.documentElement.getAttribute('data-lang') || 'es';
-    const labels = collectLabels(doc);
-    if (published.length === 0) {
-      container.innerHTML = '';
-      if (emptyState) emptyState.classList.remove('hidden');
-      return;
+    try {
+      const lang = doc.documentElement.getAttribute('data-lang') || 'es';
+      const labels = collectLabels(doc);
+      if (published.length === 0) {
+        container.innerHTML = '';
+        if (emptyState) emptyState.classList.remove('hidden');
+        return;
+      }
+      if (emptyState) emptyState.classList.add('hidden');
+      container.innerHTML = published.map((item) => renderPromoCard(item, lang, labels)).join('');
+      console.debug('[promos] rendered', published.length, 'card(s)');
+    } catch (e) {
+      console.error('[promos] render failed:', e);
     }
-    if (emptyState) emptyState.classList.add('hidden');
-    container.innerHTML = published.map((item) => renderPromoCard(item, lang, labels)).join('');
   };
 
   render();
@@ -124,5 +133,14 @@ export async function initPromos(doc = document, fetchImpl = fetch) {
 }
 
 if (typeof document !== 'undefined') {
-  document.addEventListener('DOMContentLoaded', () => initPromos());
+  console.debug('[promos] module evaluated, readyState:', document.readyState);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      console.debug('[promos] DOMContentLoaded fired, initializing');
+      initPromos();
+    });
+  } else {
+    console.debug('[promos] DOMContentLoaded already passed, initializing immediately');
+    initPromos();
+  }
 }
