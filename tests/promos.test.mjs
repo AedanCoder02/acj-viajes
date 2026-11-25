@@ -105,3 +105,8 @@ test('admin backoffice exists, is not indexable, and is not linked from the publ
   assert.match(adminHtml, /<meta name="robots" content="noindex, nofollow" \/>/);
   assert.doesNotMatch(html, /href="admin\//, 'the public site should not link to the backoffice');
 });
+
+test('promos.js reveals injected cards itself, since script.js only observes .reveal-item at load', () => {
+  const src = readFileSync(new URL('../assets/promos.js', import.meta.url), 'utf8');
+  assert.match(src, /querySelectorAll\('\.reveal-item'\)\.forEach\(\(el\) => el\.classList\.add\('in'\)\)/);
+});
