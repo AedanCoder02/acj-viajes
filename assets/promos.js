@@ -118,6 +118,8 @@ export async function initPromos(doc = document, fetchImpl = fetch) {
       }
       if (emptyState) emptyState.classList.add('hidden');
       container.innerHTML = published.map((item) => renderPromoCard(item, lang, labels)).join('');
+      // script.js observes .reveal-item only at DOMContentLoaded; cards injected later must be revealed here.
+      requestAnimationFrame(() => container.querySelectorAll('.reveal-item').forEach((el) => el.classList.add('in')));
       console.debug('[promos] rendered', published.length, 'card(s)');
     } catch (e) {
       console.error('[promos] render failed:', e);
